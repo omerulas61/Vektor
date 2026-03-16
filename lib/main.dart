@@ -28,11 +28,28 @@ class AnaSayfa extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('VEKTOR', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-        backgroundColor: Colors.redAccent,
-        centerTitle: true,
+        title: const Text(
+            'VEKTOR',
+            style: TextStyle(
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.5,
+              color: Color(0xFFB71C1C), // Sadece başlık kırmızı
+            )
+        ),
+        backgroundColor: Color(0xFFFDF6F5), // Bar beyaz olsun
+        elevation: 0, // Gölgeyi kaldır
+        centerTitle: false, // Başlığı sola çek (Daha modern durur)
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications, color: Colors.white))
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: CircleAvatar(
+              backgroundColor: Color(0xFFFDF6F5),
+              child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.notifications_none, color: Colors.black87)
+              ),
+            ),
+          )
         ],
       ),
       body: SingleChildScrollView(
@@ -104,31 +121,33 @@ class AnaSayfa extends StatelessWidget {
   }
 
   Widget _buildActionCard(BuildContext context, {required String title, required String subtitle, required IconData icon, required Color color, required Color iconColor, required VoidCallback onTap}) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: iconColor.withOpacity(0.3)),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white, // Kart içi beyaz
+        borderRadius: BorderRadius.circular(20), // Daha yuvarlak köşeler
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.all(20),
+        leading: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.2), // Arka plana hafif renk tonu
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: iconColor, size: 30),
         ),
-        child: Row(
-          children: [
-            Icon(icon, size: 40, color: iconColor),
-            const SizedBox(width: 15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: iconColor)),
-                  Text(subtitle, style: const TextStyle(fontSize: 14, color: Colors.black54)),
-                ],
-              ),
-            ),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black26),
-          ],
-        ),
+        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.blueGrey.shade900)),
+        subtitle: Text(subtitle, style: TextStyle(color: Colors.blueGrey.shade600)),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+        onTap: onTap,
       ),
     );
   }
