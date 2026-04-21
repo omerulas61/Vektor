@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'screens/acil_yardim_sayfasi.dart';
 
 void main() {
   runApp(const VektorApp());
@@ -72,7 +73,10 @@ class AnaSayfa extends StatelessWidget {
               color: Colors.red.shade100,
               iconColor: Colors.red,
               onTap: () {
-                // Buraya yardım isteme sayfasına gidiş kodu gelecek
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AcilYardimSayfasi()),
+                );
               },
             ),
 
