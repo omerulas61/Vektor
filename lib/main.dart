@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'screens/acil_yardim_sayfasi.dart';
 
 void main() {
   runApp(const VektorApp());
@@ -33,17 +34,30 @@ class AnaSayfa extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.w900,
               letterSpacing: 1.5,
+<<<<<<< HEAD
               color: Color(0xFFB71C1C),
             )
         ),
         backgroundColor: const Color(0xFFFDF6F5),
         elevation: 0,
         centerTitle: false,
+=======
+              color: Color(0xFFB71C1C), // Sadece başlık kırmızı
+            )
+        ),
+        backgroundColor: Color(0xFFFDF6F5), // Bar beyaz olsun
+        elevation: 0, // Gölgeyi kaldır
+        centerTitle: false, // Başlığı sola çek (Daha modern durur)
+>>>>>>> c87e75953a245dc96723bf228002ad6416248dda
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: CircleAvatar(
+<<<<<<< HEAD
               backgroundColor: const Color(0xFFFDF6F5),
+=======
+              backgroundColor: Color(0xFFFDF6F5),
+>>>>>>> c87e75953a245dc96723bf228002ad6416248dda
               child: IconButton(
                   onPressed: () {},
                   icon: const Icon(Icons.notifications_none, color: Colors.black87)
@@ -71,7 +85,14 @@ class AnaSayfa extends StatelessWidget {
               color: Colors.red.shade100,
               iconColor: Colors.red,
               onTap: () {
+<<<<<<< HEAD
                 // Sayfa hazır olduğunda buraya Navigator eklenebilir
+=======
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AcilYardimSayfasi()),
+                );
+>>>>>>> c87e75953a245dc96723bf228002ad6416248dda
               },
             ),
 
@@ -121,8 +142,13 @@ class AnaSayfa extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
+<<<<<<< HEAD
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+=======
+        color: Colors.white, // Kart içi beyaz
+        borderRadius: BorderRadius.circular(20), // Daha yuvarlak köşeler
+>>>>>>> c87e75953a245dc96723bf228002ad6416248dda
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -136,7 +162,11 @@ class AnaSayfa extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
+<<<<<<< HEAD
             color: color.withOpacity(0.2),
+=======
+            color: color.withOpacity(0.2), // Arka plana hafif renk tonu
+>>>>>>> c87e75953a245dc96723bf228002ad6416248dda
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: iconColor, size: 30),
