@@ -1,30 +1,155 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-
-import 'package:vektor/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  runApp(const VektorApp());
+}
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+class VektorApp extends StatelessWidget {
+  const VektorApp({super.key});
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'VEKTÖR - Afet Koordinasyon',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+        useMaterial3: true,
+      ),
+      home: const LoginPage(),
+    );
+  }
+}
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
-  });
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF1A1A2E), // Koyu modern arka plan
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.location_on_outlined, size: 80, color: Colors.white),
+              const Text(
+                'VEKTÖR',
+                style: TextStyle(
+                  fontSize: 42,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  letterSpacing: 2,
+                ),
+              ),
+              const Text(
+                'AFET KOORDİNASYON PLATFORMU',
+                style: TextStyle(color: Colors.white70, fontSize: 12),
+              ),
+              const SizedBox(height: 60),
+
+              // AFETZEDE GİRİŞİ
+              _buildSelectionCard(
+                context,
+                title: 'YARDIM İSTE',
+                subtitle: 'Afetzede talebi oluştur',
+                icon: Icons.campaign_rounded,
+                color: Colors.orangeAccent,
+                onTap: () {
+                  // İleride buraya afetzede login sayfası gelecek
+                },
+              ),
+
+              const SizedBox(height: 20),
+
+              // YARDIM KURULUŞU / GÖNÜLLÜ GİRİŞİ
+              _buildSelectionCard(
+                context,
+                title: 'GÖNÜLLÜ OL',
+                subtitle: 'Görev eşleştirmesi yap',
+                icon: Icons.handshake_rounded,
+                color: Colors.lightBlueAccent,
+                onTap: () {
+                  // İleride buraya kuruluş login sayfası gelecek
+                },
+              ),
+              
+              const SizedBox(height: 60),
+              
+              // Alt Süreç İkonları
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _ProcessIcon(Icons.settings, "Hazırlık"),
+                  _ProcessIcon(Icons.notification_important, "Uyarı"),
+                  _ProcessIcon(Icons.medical_services, "Müdahale"),
+                  _ProcessIcon(Icons.rebase_edit, "İyileştirme"),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectionCard(BuildContext context, 
+      {required String title, required String subtitle, required IconData icon, required Color color, required VoidCallback onTap}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          border: Border.all(color: color.withOpacity(0.5), width: 2),
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            colors: [color.withOpacity(0.2), Colors.transparent],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 50, color: color),
+            const SizedBox(width: 20),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(color: color, fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  subtitle,
+                  style: const TextStyle(color: Colors.white60, fontSize: 14),
+                ),
+              ],
+            ),
+            const Spacer(),
+            Icon(Icons.arrow_forward_ios, color: color, size: 18),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProcessIcon extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _ProcessIcon(this.icon, this.label);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(icon, color: Colors.white38, size: 24),
+        const SizedBox(height: 4),
+        Text(label, style: const TextStyle(color: Colors.white38, fontSize: 10)),
+      ],
+    );
+  }
 }
