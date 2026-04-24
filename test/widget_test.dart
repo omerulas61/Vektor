@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vektor/screens/acil_yardim_sayfasi.dart';
 
 void main() {
   runApp(const VektorApp());
@@ -10,84 +11,72 @@ class VektorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'VEKTÖR - Afet Koordinasyon',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-        useMaterial3: true,
-      ),
-      home: const LoginPage(),
+      title: 'Vektör Yardım',
+      theme: ThemeData(useMaterial3: true),
+      home: const HomePage(),
     );
   }
 }
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A2E), // Koyu modern arka plan
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text("VEKTÖR", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/background_image.png"), // BURAYI PNG YAPTIK
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SafeArea(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.location_on_outlined, size: 80, color: Colors.white),
-              const Text(
-                'VEKTÖR',
-                style: TextStyle(
-                  fontSize: 42,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 2,
+              const SizedBox(height: 20),
+              // Üst Kart
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.8),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Row(
+                  children: [
+                    CircleAvatar(radius: 25, child: Icon(Icons.person)),
+                    SizedBox(width: 15),
+                    Text("Hoş geldiniz,\nAfet Koordinasyon Platformu", style: TextStyle(fontWeight: FontWeight.bold)),
+                  ],
                 ),
               ),
-              const Text(
-                'AFET KOORDİNASYON PLATFORMU',
-                style: TextStyle(color: Colors.white70, fontSize: 12),
+              const SizedBox(height: 30),
+              // Kartlar
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 15,
+                    mainAxisSpacing: 15,
+                    children: [
+                      _card(context, "YARDIM İSTE", Icons.campaign, Colors.red, const AcilYardimSayfasi()),
+                      _card(context, "GÖNÜLLÜ OL", Icons.handshake, Colors.blue, null),
+                      _card(context, "ACİL HARİTA", Icons.map, Colors.orange, null),
+                      _card(context, "DESTEK OL", Icons.volunteer_activism, Colors.purple, null),
+                    ],
+                  ),
+                ),
               ),
-              const SizedBox(height: 60),
-
-              // AFETZEDE GİRİŞİ
-              _buildSelectionCard(
-                context,
-                title: 'YARDIM İSTE',
-                subtitle: 'Afetzede talebi oluştur',
-                icon: Icons.campaign_rounded,
-                color: Colors.orangeAccent,
-                onTap: () {
-                  // İleride buraya afetzede login sayfası gelecek
-                },
-              ),
-
-              const SizedBox(height: 20),
-
-              // YARDIM KURULUŞU / GÖNÜLLÜ GİRİŞİ
-              _buildSelectionCard(
-                context,
-                title: 'GÖNÜLLÜ OL',
-                subtitle: 'Görev eşleştirmesi yap',
-                icon: Icons.handshake_rounded,
-                color: Colors.lightBlueAccent,
-                onTap: () {
-                  // İleride buraya kuruluş login sayfası gelecek
-                },
-              ),
-              
-              const SizedBox(height: 60),
-              
-              // Alt Süreç İkonları
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _ProcessIcon(Icons.settings, "Hazırlık"),
-                  _ProcessIcon(Icons.notification_important, "Uyarı"),
-                  _ProcessIcon(Icons.medical_services, "Müdahale"),
-                  _ProcessIcon(Icons.rebase_edit, "İyileştirme"),
-                ],
-              )
             ],
           ),
         ),
@@ -95,61 +84,22 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSelectionCard(BuildContext context, 
-      {required String title, required String subtitle, required IconData icon, required Color color, required VoidCallback onTap}) {
+  Widget _card(BuildContext context, String title, IconData icon, Color color, Widget? page) {
     return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
+      onTap: () {
+        if (page != null) Navigator.push(context, MaterialPageRoute(builder: (c) => page));
+      },
       child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          border: Border.all(color: color.withOpacity(0.5), width: 2),
-          borderRadius: BorderRadius.circular(20),
-          gradient: LinearGradient(
-            colors: [color.withOpacity(0.2), Colors.transparent],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Row(
+        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.9), borderRadius: BorderRadius.circular(20)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 50, color: color),
-            const SizedBox(width: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(color: color, fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  subtitle,
-                  style: const TextStyle(color: Colors.white60, fontSize: 14),
-                ),
-              ],
-            ),
-            const Spacer(),
-            Icon(Icons.arrow_forward_ios, color: color, size: 18),
+            Icon(icon, color: color, size: 40),
+            const SizedBox(height: 10),
+            Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ProcessIcon extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  const _ProcessIcon(this.icon, this.label);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(icon, color: Colors.white38, size: 24),
-        const SizedBox(height: 4),
-        Text(label, style: const TextStyle(color: Colors.white38, fontSize: 10)),
-      ],
     );
   }
 }
