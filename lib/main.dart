@@ -33,7 +33,10 @@ class VektorApp extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key}); // Key hatası düzeltildi
+  final String adSoyad; // Giriş yapan kullanıcının ismini tutan değişken
+
+  // Parametreyi constructor'a ekledik
+  const HomePage({super.key, required this.adSoyad});
 
   @override
   Widget build(BuildContext context) {
@@ -54,15 +57,15 @@ class HomePage extends StatelessWidget {
       ),
       body: Container(
         decoration: BoxDecoration(
-           image: DecorationImage(
-           image: AssetImage("assets/image.png"),
-           fit: BoxFit.cover,
+          image: DecorationImage(
+            image: const AssetImage("assets/image.png"),
+            fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
               Colors.black.withValues(alpha: 0.5),
-               BlendMode.darken,
-              ),
-             ),
-             ),
+              BlendMode.darken,
+            ),
+          ),
+        ),
         child: SafeArea(
           child: Column(
             children: [
@@ -72,32 +75,36 @@ class HomePage extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 16),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.85), // Yeni kullanım
+                  color: Colors.white.withValues(alpha: 0.85),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 30,
                       backgroundColor: Color(0xFFE0E6ED),
                       child: Icon(Icons.person, size: 35, color: Color(0xFF6C7B8A)),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Hoş geldiniz,",
                           style: TextStyle(
+                            color: Color(0xFF2E3D49),
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        // Sabit metin yerine adSoyad değişkenini koyduk
+                        Text(
+                          adSoyad,
+                          style: const TextStyle(
                             color: Color(0xFF2E3D49),
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          "Afet Koordinasyon Platformu",
-                          style: TextStyle(color: Color(0xFF6C7B8A)),
                         ),
                       ],
                     ),
@@ -189,11 +196,11 @@ class HomePage extends StatelessWidget {
 
   Widget _buildEmergencyCard(BuildContext context,
       {required String title,
-      required String subtitle,
-      required IconData icon,
-      required Color cardColor,
-      required Color iconColor,
-      Widget? targetPage}) {
+        required String subtitle,
+        required IconData icon,
+        required Color cardColor,
+        required Color iconColor,
+        Widget? targetPage}) {
     return InkWell(
       onTap: () {
         if (targetPage != null) {

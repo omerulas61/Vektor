@@ -39,7 +39,9 @@ class _KayitSayfasiState extends State<KayitSayfasi> {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(
+            builder: (context) => HomePage(adSoyad: _adSoyadController.text.trim()),
+          ),
               (route) => false,
         );
       }
