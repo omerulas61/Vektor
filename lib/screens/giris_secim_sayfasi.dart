@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:vektor/main.dart'; // HomePage'e erişmek için
+import 'package:vektor/main.dart';
+import 'package:vektor/screens/kayit_sayfasi.dart';
+import 'package:vektor/screens/login_page.dart';
+
 
 class GirisSecimSayfasi extends StatelessWidget {
   const GirisSecimSayfasi({super.key});
@@ -9,7 +12,6 @@ class GirisSecimSayfasi extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Arka plan resmi (Ana sayfadakiyle uyumlu olması için)
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -18,7 +20,6 @@ class GirisSecimSayfasi extends StatelessWidget {
               ),
             ),
           ),
-          // Karartma katmanı
           Container(
             color: Colors.black.withValues(alpha: 0.6),
           ),
@@ -44,16 +45,15 @@ class GirisSecimSayfasi extends StatelessWidget {
                   ),
                   const SizedBox(height: 60),
 
-                  // Seçim Butonları
                   _buildOptionButton(
                     context,
                     title: "KULLANICI GİRİŞİ",
                     subtitle: "Yardım istemek veya destek olmak için",
                     icon: Icons.person,
                     onTap: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const HomePage()),
+                        MaterialPageRoute(builder: (context) => const KayitSayfasi()),
                       );
                     },
                   ),
@@ -64,8 +64,36 @@ class GirisSecimSayfasi extends StatelessWidget {
                     subtitle: "Resmi kurum ve STK yönetimi için",
                     icon: Icons.account_balance,
                     onTap: () {
-                      // Kurum girişi sayfası hazır olduğunda buraya eklenecek
+                      // Kurum girişi sayfası
                     },
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  // YENİ EKLENEN BÖLÜM: Zaten hesabım var
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginPage()),
+                      );
+                    },
+                    child: RichText(
+                      text: const TextSpan(
+                        text: "Zaten bir hesabın var mı? ",
+                        style: TextStyle(color: Colors.white70, fontSize: 14),
+                        children: [
+                          TextSpan(
+                            text: "Giriş Yap",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),

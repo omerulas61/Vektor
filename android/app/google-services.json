@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "685785561916",
+    "project_id": "vektor-98115",
+    "storage_bucket": "vektor-98115.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:685785561916:android:b8f2913014ef1edcf8bc39",
+        "android_client_info": {
+          "package_name": "com.example.vektor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBR5aNYEcB_jzU4GFpQOEP90nl7ir4ZnrE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
