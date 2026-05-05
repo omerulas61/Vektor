@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:vektor/screens/acil_yardim_sayfasi.dart';
+import 'package:vektor/screens/giris_secim_sayfasi.dart';
 
 void main() {
   runApp(const VektorApp());
 }
 
 class VektorApp extends StatelessWidget {
-  const VektorApp({super.key}); // Key hatası düzeltildi
+  const VektorApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class VektorApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: const GirisSecimSayfasi(),
     );
   }
 }
