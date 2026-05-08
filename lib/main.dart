@@ -4,6 +4,7 @@ import 'package:vektor/screens/giris_secim_sayfasi.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vektor/screens/profil_sayfasi.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -94,44 +95,50 @@ class HomePage extends StatelessWidget {
             children: [
               const SizedBox(height: 10),
               // Üst Bilgi Kartı
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.85),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Color(0xFFE0E6ED),
-                      child: Icon(Icons.person, size: 35, color: Color(0xFF6C7B8A)),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilSayfasi(adSoyad: adSoyad),
                     ),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Hoş geldiniz,",
-                          style: TextStyle(
-                            color: Color(0xFF2E3D49),
-                            fontSize: 14,
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.85),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Color(0xFFE0E6ED),
+                        child: Icon(Icons.person, size: 35, color: Color(0xFF6C7B8A)),
+                      ),
+                      const SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Hoş geldiniz,",
+                            style: TextStyle(color: Color(0xFF2E3D49), fontSize: 14),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        // Sabit metin yerine adSoyad değişkenini koyduk
-                        Text(
-                          adSoyad,
-                          style: const TextStyle(
-                            color: Color(0xFF2E3D49),
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                          const SizedBox(height: 4),
+                          Text(
+                            adSoyad,
+                            style: const TextStyle(
+                              color: Color(0xFF2E3D49),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 30),

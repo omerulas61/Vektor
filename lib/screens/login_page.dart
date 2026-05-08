@@ -57,26 +57,28 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           .get();
 
       if (sorgu.docs.isNotEmpty) {
-        // --- DEĞİŞİKLİK BURADA BAŞLIYOR ---
-        // Veritabanındaki ilk dökümandan ismi alıyoruz
-        String gelenIsim = sorgu.docs.first.get('adSoyad');
+        // Firestore'daki veriyi bir Map (sözlük) olarak alıyoruz
+        var userDoc = sorgu.docs.first.data();
 
-        // --- BURASI YENİ: Hafızaya Kayıt İşlemi ---
+        // --- HAFIZAYA KAYIT (Shared Preferences) ---
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isLoggedIn', true); // Giriş yapıldı olarak işaretle
-        await prefs.setString('userName', gelenIsim); // İsmi sakla
-        // ----------------------------------------
+        await prefs.setBool('isLoggedIn', true);
 
+        // Firestore'daki alan isimlerinle birebir eşliyoruz:
+        await prefs.setString('userName', userDoc['adSoyad'] ?? "");
+        await prefs.setString('userBlood', userDoc['kanGrubu'] ?? "");
+        await prefs.setString('userPhone', userDoc['telefon'] ?? "");
+        await prefs.setString('userRelativeName', userDoc['yakinAdSoyad'] ?? "");
+        await prefs.setString('userRelativePhone', userDoc['yakinTelefon'] ?? "");
 
         if (mounted) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => HomePage(adSoyad: gelenIsim), // İsmi HomePage'e gönderiyoruz
+              builder: (context) => HomePage(adSoyad: userDoc['adSoyad'] ?? "Kullanıcı"),
             ),
           );
         }
-        // --- DEĞİŞİKLİK BURADA BİTİYOR ---
       } else {
         // Eşleşme yoksa hata göster
         if (mounted) {
