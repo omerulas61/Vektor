@@ -3,6 +3,7 @@ import 'package:vektor/screens/acil_yardim_sayfasi.dart';
 import 'package:vektor/screens/giris_secim_sayfasi.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,11 +12,30 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const VektorApp());
+  // Hafızayı kontrol et
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+  final String? userName = prefs.getString('userName');
+
+
+
+  runApp(VektorApp(
+    isLoggedIn: isLoggedIn,
+    userName: userName ?? "Kullanıcı",
+  ));
 }
 
 class VektorApp extends StatelessWidget {
-  const VektorApp({super.key});
+
+  final bool isLoggedIn;
+  final String userName;
+
+
+  const VektorApp({
+    super.key,
+    required this.isLoggedIn,
+    required this.userName
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +47,10 @@ class VektorApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const GirisSecimSayfasi(),
+      // DEĞİŞİKLİK 3: Giriş yapılmışsa HomePage'e, yapılmamışsa GirisSecim'e git
+      home: isLoggedIn
+          ? HomePage(adSoyad: userName)
+          : const GirisSecimSayfasi(),
     );
   }
 }

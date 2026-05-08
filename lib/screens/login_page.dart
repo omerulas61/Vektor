@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Sorgu için gerekli
 import 'package:vektor/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -59,6 +60,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         // --- DEĞİŞİKLİK BURADA BAŞLIYOR ---
         // Veritabanındaki ilk dökümandan ismi alıyoruz
         String gelenIsim = sorgu.docs.first.get('adSoyad');
+
+        // --- BURASI YENİ: Hafızaya Kayıt İşlemi ---
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true); // Giriş yapıldı olarak işaretle
+        await prefs.setString('userName', gelenIsim); // İsmi sakla
+        // ----------------------------------------
+
 
         if (mounted) {
           Navigator.pushReplacement(
