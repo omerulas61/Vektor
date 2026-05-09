@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vektor/screens/acil_harita_sayfasi.dart'; // Harita sayfanı import et
 
 class AcilYardimSayfasi extends StatelessWidget {
   const AcilYardimSayfasi({super.key});
@@ -20,17 +21,36 @@ class AcilYardimSayfasi extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            // Buraya ileride acil durum butonları (Enkaz altındayım vb.) gelecek
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 children: [
-                  _buildEmergencyButton(Icons.house_siding, "Enkaz Altındayım"),
-                  _buildEmergencyButton(Icons.medical_services, "Yaralı Var"),
-                  _buildEmergencyButton(Icons.fire_truck, "Yangın / Patlama"),
-                  _buildEmergencyButton(Icons.waves, "Su Baskını"),
+                  _buildEmergencyButton(
+                      context,
+                      Icons.house_siding,
+                      "Enkaz Altındayım",
+                      "Enkaz Altında"
+                  ),
+                  _buildEmergencyButton(
+                      context,
+                      Icons.medical_services,
+                      "Yaralı Var",
+                      "Yaralı"
+                  ),
+                  _buildEmergencyButton(
+                      context,
+                      Icons.fire_truck,
+                      "Yangın / Patlama",
+                      "Yangın"
+                  ),
+                  _buildEmergencyButton(
+                      context,
+                      Icons.waves,
+                      "Su Baskını",
+                      "Sel"
+                  ),
                 ],
               ),
             ),
@@ -40,7 +60,7 @@ class AcilYardimSayfasi extends StatelessWidget {
     );
   }
 
-  Widget _buildEmergencyButton(IconData icon, String label) {
+  Widget _buildEmergencyButton(BuildContext context, IconData icon, String label, String turKodu) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
@@ -48,7 +68,18 @@ class AcilYardimSayfasi extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         elevation: 4,
       ),
-      onPressed: () {},
+      onPressed: () {
+        // Butona basıldığında harita sayfasını "seçim modunda" açıyoruz
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AcilHaritaSayfasi(
+              isKurum: false,
+              secilenTur: turKodu, // Hangi butona basıldığını haritaya gönderiyoruz
+            ),
+          ),
+        );
+      },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

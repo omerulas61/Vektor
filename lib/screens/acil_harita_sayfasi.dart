@@ -5,8 +5,8 @@ import 'package:geolocator/geolocator.dart';
 
 class AcilHaritaSayfasi extends StatefulWidget {
   final bool isKurum; // Kurum olup olmadığını anlamak için değişken ekledik
-
-  const AcilHaritaSayfasi({super.key, this.isKurum = false});
+  final String? secilenTur;
+  const AcilHaritaSayfasi({super.key, this.isKurum = false,this.secilenTur,});
 
   @override
   _AcilHaritaSayfasiState createState() => _AcilHaritaSayfasiState();
@@ -15,6 +15,8 @@ class AcilHaritaSayfasi extends StatefulWidget {
 class _AcilHaritaSayfasiState extends State<AcilHaritaSayfasi> {
   GoogleMapController? _haritaKontrolcu;
   Set<Marker> _isaretciler = {};
+  DateTime? _sonTiklamaZamani;
+
 
   // Düzenleme modu için değişkenler
   bool _duzenlemeModu = false;
@@ -44,10 +46,21 @@ class _AcilHaritaSayfasiState extends State<AcilHaritaSayfasi> {
                 title: doc['baslik'],
                 snippet: "$tur (Silmek için dokunun)",
               ),
+
+
               // BURASI YENİ: Sadece kurumsa tıklayınca silme uyarısı ver
               onTap: () {
-                if (widget.isKurum) {
-                  _silmeOnayiAl(doc.id);
+                // Eğer hem kurum giriş yapmışsa hem de "Düzenle" modu açıksa
+                if (widget.isKurum && _duzenlemeModu) {
+                  _silmeOnayiAl(doc.id); // Tek tıklamada silme sorusunu sor
+                } else if (widget.isKurum && !_duzenlemeModu) {
+                  // Düzenleme modu kapalıyken sadece bilgi verebilirsin
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Silmek için önce 'Düzenle' modunu açmalısınız."),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
                 }
               },
               icon: BitmapDescriptor.defaultMarkerWithHue(
@@ -61,6 +74,33 @@ class _AcilHaritaSayfasiState extends State<AcilHaritaSayfasi> {
       }
     });
   }
+
+  Future<void> _yardimNoktasiEkle() async {
+    try {
+      await FirebaseFirestore.instance.collection('EtkinlikNoktalari').add({
+        // widget.secilenTur diyerek yukarıdaki değere ulaşıyoruz
+        'baslik': widget.secilenTur ?? "Acil Bildirim",
+        'tur': widget.secilenTur ?? "Genel Yardım",
+        'konum': GeoPoint(_merkezKonum.latitude, _merkezKonum.longitude),
+        'zaman': FieldValue.serverTimestamp(),
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Yardım talebiniz başarıyla iletildi!")),
+        );
+        Navigator.pop(context); // Kayıttan sonra ana sayfaya dön
+      }
+    } catch (e) {
+      debugPrint("Hata: $e");
+    }
+  }
+
+
+
+
+
+
 
   Future<void> _silmeOnayiAl(String docId) async {
     return showDialog(
@@ -186,7 +226,7 @@ class _AcilHaritaSayfasiState extends State<AcilHaritaSayfasi> {
           if (widget.isKurum && !_duzenlemeModu)
             Positioned(
               bottom: 20,
-              right: 20,
+              left: 20,
               child: FloatingActionButton.extended(
                 onPressed: () => setState(() => _duzenlemeModu = true),
                 label: const Text("Düzenle"),
@@ -235,6 +275,57 @@ class _AcilHaritaSayfasiState extends State<AcilHaritaSayfasi> {
                 ),
               ),
             ),
+
+          if (widget.secilenTur != null && !widget.isKurum)
+            Positioned(
+              bottom: 30,
+              left: 40,
+              right: 40,
+              child: Column(
+                children: [
+                  // Merkeze odaklanmayı kolaylaştıran bir işaretçi (opsiyonel)
+                  const Icon(Icons.arrow_downward, color: Colors.white, size: 30),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 60,
+                    child: ElevatedButton.icon(
+                      onPressed: _yardimNoktasiEkle, // Senin yazdığın fonksiyonu çağırıyoruz
+                      icon: const Icon(Icons.send, color: Colors.white),
+                      label: Text(
+                        "${widget.secilenTur?.toUpperCase()} KONUMUNU BİLDİR",
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade900,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                        elevation: 10,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+// Kullanıcı için de merkeze bir pin koyalım ki nereyi seçtiğini anlasın
+          if (widget.secilenTur != null && !widget.isKurum)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 35),
+                child: Icon(Icons.location_on, color: Colors.red, size: 50),
+              ),
+            ),
+
+
+
+
+
+
+
+
+
+
         ],
       ),
     );
