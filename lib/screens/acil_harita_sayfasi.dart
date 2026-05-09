@@ -1,6 +1,7 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 class AcilHaritaSayfasi extends StatefulWidget {
   @override
@@ -8,7 +9,38 @@ class AcilHaritaSayfasi extends StatefulWidget {
 }
 
 class _AcilHaritaSayfasiState extends State<AcilHaritaSayfasi> {
+
+  GoogleMapController? _haritaKontrolcu;
   Set<Marker> _isaretciler = {};
+
+  Future<void> _konumumaGit() async {
+    bool servisEtkinmi = await Geolocator.isLocationServiceEnabled();
+    if (!servisEtkinmi) {
+      // Kullanıcıya konum servislerini açmasını söyleyebilirsin
+      return Future.error('Konum servisleri kapalı.');
+    }
+
+    LocationPermission izin = await Geolocator.checkPermission();
+    if (izin == LocationPermission.denied) {
+      izin = await Geolocator.requestPermission();
+      if (izin == LocationPermission.denied) {
+        return Future.error('Konum izni reddedildi.');
+      }
+    }
+
+    if (izin == LocationPermission.deniedForever) {
+      return Future.error('Konum izinleri kalıcı olarak reddedildi.');
+    }
+
+    // İzinler tamamsa konumu al
+    Position konum = await Geolocator.getCurrentPosition();
+    _haritaKontrolcu?.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(konum.latitude, konum.longitude), zoom: 17),
+      ),
+    );
+  }
+
 
   @override
   void initState() {
@@ -38,14 +70,30 @@ class _AcilHaritaSayfasiState extends State<AcilHaritaSayfasi> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Acil Durum Haritası")),
+      appBar: AppBar(title: const Text("Acil Durum Haritası")),
       body: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: LatLng(39.9334, 32.8597), // Başlangıçta Ankara'yı açar
+        myLocationEnabled: true,
+        myLocationButtonEnabled: true,
+        initialCameraPosition: const CameraPosition(
+          target: LatLng(39.9334, 32.8597), // Türkiye geneli başlangıç
           zoom: 6,
         ),
-        markers: _isaretciler, // İşaretçileri haritaya ekle
+        onMapCreated: (GoogleMapController controller) {
+          _haritaKontrolcu = controller; // Kontrolcüyü ata
+          _konumumaGit(); // Harita açılır açılmaz konuma odaklan
+        },
+
+        markers: _isaretciler,
       ),
     );
   }
+  Future<void> _konumIzniIste() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+  }
+
+
+
 }

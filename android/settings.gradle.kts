@@ -22,7 +22,9 @@ plugins {
     // START: FlutterFire Configuration
     id("com.google.gms.google-services") version("4.3.15") apply false
     // END: FlutterFire Configuration
-    id("org.jetbrains.kotlin.android") version "1.8.22" apply false
+
+    // 1.8.22 olan sürümü 2.1.0 yaparak uyuşmazlığı gideriyoruz
+    id("org.jetbrains.kotlin.android") version "2.1.0" apply false
 }
 
 include(":app")
