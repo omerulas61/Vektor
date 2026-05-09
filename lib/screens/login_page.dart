@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Sorgu için gerekli
 import 'package:vektor/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vektor/screens/kurum_ana_sayfasi.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -92,6 +93,49 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     }
   }
 
+  Future<void> _kurumGirisYap() async {
+    String ad = _kurumAdController.text.trim();
+    String sifre = _kurumSifreController.text.trim();
+
+    if (ad.isEmpty || sifre.isEmpty) {
+      _hataGoster("Lütfen kurum adı ve şifresini girin.");
+      return;
+    }
+
+    setState(() => _yukleniyor = true);
+
+    try {
+      // Kurumlar koleksiyonunda eşleşme arıyoruz
+      var sorgu = await FirebaseFirestore.instance
+          .collection('Kurumlar')
+          .where('kurum_adi', isEqualTo: ad)
+          .where('kurum_sifre', isEqualTo: sifre)
+          .get();
+
+      if (sorgu.docs.isNotEmpty) {
+        // Giriş başarılı
+        var kurumDoc = sorgu.docs.first.data();
+
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => KurumAnaSayfasi(kurumAdi: kurumDoc['kurum_adi'] ?? "Kurum"),
+            ),
+          );
+        }
+      } else {
+        _hataGoster("Hatalı Kurum Adı veya Şifre!");
+      }
+    } catch (e) {
+      _hataGoster("Bağlantı hatası: ${e.toString()}");
+    } finally {
+      if (mounted) setState(() => _yukleniyor = false);
+    }
+  }
+
+
+
   void _hataGoster(String mesaj) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(mesaj), backgroundColor: Colors.red),
@@ -147,9 +191,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           _buildInput(label: "Kurum Adı", icon: Icons.account_balance, controller: _kurumAdController),
           _buildInput(label: "Kurum Şifresi", icon: Icons.vpn_key, isPassword: true, controller: _kurumSifreController),
           const SizedBox(height: 30),
-          _buildLoginButton("Kurum Girişi", () {
-            _hataGoster("Kurum girişi henüz aktif değil.");
-          }),
+          // BURASI GÜNCELLENDİ:
+          _buildLoginButton("Kurum Girişi", _kurumGirisYap),
         ],
       ),
     );

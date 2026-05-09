@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vektor/main.dart';
 import 'package:vektor/screens/kayit_sayfasi.dart';
 import 'package:vektor/screens/login_page.dart';
+import 'package:vektor/screens/kurum_kayit_sayfasi.dart';
 
 
 class GirisSecimSayfasi extends StatelessWidget {
@@ -64,7 +65,10 @@ class GirisSecimSayfasi extends StatelessWidget {
                     subtitle: "Resmi kurum ve STK yönetimi için",
                     icon: Icons.account_balance,
                     onTap: () {
-                      // Kurum girişi sayfası
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const KurumKayitSayfasi()),
+                      );
                     },
                   ),
 
