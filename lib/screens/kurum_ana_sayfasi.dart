@@ -128,7 +128,7 @@ class KurumAnaSayfasi extends StatelessWidget {
                       subtitle: "Canlı yoğunluk takibi",
                       icon: Icons.map_outlined,
                       iconColor: Colors.blue.shade900,
-                      targetPage: AcilHaritaSayfasi(), // Mevcut haritayı kurum da görebilir
+                      targetPage:  AcilHaritaSayfasi(isKurum: true),// Mevcut haritayı kurum da görebilir
                     ),
                     _buildAdminCard(
                       context,
