@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vektor/screens/profil_sayfasi.dart';
+import 'package:vektor/screens/acil_harita_sayfasi.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,6 +71,7 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
+        automaticallyImplyLeading: false,
         title: const Text(
           "VEKTÖR",
           style: TextStyle(
@@ -191,6 +193,7 @@ class HomePage extends StatelessWidget {
                       icon: Icons.map,
                       cardColor: Colors.white.withValues(alpha: 0.9),
                       iconColor: Colors.orange,
+                      targetPage: AcilHaritaSayfasi(), // Sayfayı buraya bağladık
                     ),
                     _buildEmergencyCard(
                       context,
