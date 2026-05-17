@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:vektor/screens/kurum_ana_sayfasi.dart';
+import 'package:vektor/theme/app_theme.dart';
 
 class KurumKayitSayfasi extends StatefulWidget {
   const KurumKayitSayfasi({super.key});
@@ -10,98 +11,239 @@ class KurumKayitSayfasi extends StatefulWidget {
 }
 
 class _KurumKayitSayfasiState extends State<KurumKayitSayfasi> {
-  // Verileri almak için kontrolcüler
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _adController = TextEditingController();
   final TextEditingController _sifreController = TextEditingController();
+  bool _sifreGizli = true;
+  bool _yukleniyor = false;
 
-  // Firebase'e kaydetme fonksiyonu
   Future<void> _kurumKaydet() async {
-    String ad = _adController.text.trim();
-    String sifre = _sifreController.text.trim();
+    if (!_formKey.currentState!.validate()) return;
 
-    if (ad.isEmpty || sifre.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Lütfen tüm alanları doldurun!")),
-      );
-      return;
-    }
-
+    setState(() => _yukleniyor = true);
     try {
-      // Firebase Firestore'a ekleme yapıyoruz
       await FirebaseFirestore.instance.collection('Kurumlar').add({
-        'kurum_adi': ad,
-        'kurum_sifre': sifre,
+        'kurum_adi': _adController.text.trim(),
+        'kurum_sifre': _sifreController.text.trim(),
         'kayit_tarihi': FieldValue.serverTimestamp(),
       });
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Kurum başarıyla kaydedildi!")),
-        );
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => KurumAnaSayfasi(kurumAdi: ad),
+            builder: (_) =>
+                KurumAnaSayfasi(kurumAdi: _adController.text.trim()),
           ),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Hata oluştu: $e")),
+          SnackBar(
+            content: Text("Hata oluştu: $e"),
+            backgroundColor: AppColors.accent,
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       }
+    } finally {
+      if (mounted) setState(() => _yukleniyor = false);
     }
+  }
+
+  @override
+  void dispose() {
+    _adController.dispose();
+    _sifreController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Kurum Kaydı"),
-        backgroundColor: const Color(0xFF0D47A1), // Koyu mavi (Vektör temasına uygun)
-        foregroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.account_balance, size: 80, color: Color(0xFF0D47A1)),
-            const SizedBox(height: 30),
-            TextField(
-              controller: _adController,
-              decoration: const InputDecoration(
-                labelText: "Kurum Adı",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.business),
+      backgroundColor: AppColors.surface,
+      body: Column(
+        children: [
+          // Üst başlık
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF4A148C), Color(0xFF7B1FA2)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
             ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _sifreController,
-              obscureText: true, // Şifreyi gizli yapar
-              decoration: const InputDecoration(
-                labelText: "Kurum Şifresi",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
-              ),
-            ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _kurumKaydet,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0D47A1),
-                  foregroundColor: Colors.white,
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 16, 24),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                              color: Colors.white),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        const Expanded(
+                          child: Text(
+                            "Kurum Kaydı",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 48),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withValues(alpha: 0.15),
+                        border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.3),
+                            width: 2),
+                      ),
+                      child: const Icon(Icons.account_balance_rounded,
+                          size: 42, color: Colors.white),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      "Kurumunuzu Sisteme Kaydedin",
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
                 ),
-                child: const Text("KAYDET VE GİRİŞ YAP"),
               ),
             ),
-          ],
-        ),
+          ),
+          // Form
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    // Bilgi kutusu
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF7B1FA2).withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: const Color(0xFF7B1FA2)
+                                .withValues(alpha: 0.2)),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.info_outline_rounded,
+                              color: Color(0xFF7B1FA2), size: 20),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              "Kayıt sonrası kurum adı ve şifrenizle giriş yapabilirsiniz.",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 28),
+                    const Text(
+                      "Kurum Bilgileri",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _adController,
+                      validator: (v) =>
+                          v == null || v.isEmpty ? "Kurum adı zorunludur" : null,
+                      decoration: const InputDecoration(
+                        labelText: "Kurum Adı",
+                        prefixIcon: Icon(Icons.business_rounded),
+                        hintText: "Örn: AFAD İstanbul",
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _sifreController,
+                      obscureText: _sifreGizli,
+                      validator: (v) {
+                        if (v == null || v.isEmpty) return "Şifre zorunludur";
+                        if (v.length < 6) return "En az 6 karakter olmalıdır";
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: "Kurum Şifresi",
+                        prefixIcon: const Icon(Icons.lock_rounded),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _sifreGizli
+                                ? Icons.visibility_rounded
+                                : Icons.visibility_off_rounded,
+                            color: AppColors.textSecondary,
+                          ),
+                          onPressed: () =>
+                              setState(() => _sifreGizli = !_sifreGizli),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF7B1FA2),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
+                          elevation: 3,
+                        ),
+                        onPressed: _yukleniyor ? null : _kurumKaydet,
+                        child: _yukleniyor
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                    color: Colors.white, strokeWidth: 2.5),
+                              )
+                            : const Text(
+                                "KAYDET VE GİRİŞ YAP",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                    letterSpacing: 0.5),
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

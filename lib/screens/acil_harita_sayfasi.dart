@@ -229,9 +229,10 @@ class _AcilHaritaSayfasiState extends State<AcilHaritaSayfasi> {
               left: 20,
               child: FloatingActionButton.extended(
                 onPressed: () => setState(() => _duzenlemeModu = true),
-                label: const Text("Düzenle"),
-                icon: const Icon(Icons.edit_location_alt),
-                backgroundColor: Colors.blue.shade900,
+                label: const Text("Düzenle",style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                icon: const Icon(Icons.edit_location_alt,color: Colors.black),
+                backgroundColor: Colors.blue.shade900.withValues(alpha: 0.5),
+                elevation: 2,
               ),
             ),
 

@@ -6,6 +6,7 @@ import 'firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vektor/screens/profil_sayfasi.dart';
 import 'package:vektor/screens/acil_harita_sayfasi.dart';
+import 'package:vektor/theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,12 +15,9 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Hafızayı kontrol et
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
   final String? userName = prefs.getString('userName');
-
-
 
   runApp(VektorApp(
     isLoggedIn: isLoggedIn,
@@ -28,15 +26,13 @@ Future<void> main() async {
 }
 
 class VektorApp extends StatelessWidget {
-
   final bool isLoggedIn;
   final String userName;
-
 
   const VektorApp({
     super.key,
     required this.isLoggedIn,
-    required this.userName
+    required this.userName,
   });
 
   @override
@@ -44,12 +40,7 @@ class VektorApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Vektör Yardım',
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      // DEĞİŞİKLİK 3: Giriş yapılmışsa HomePage'e, yapılmamışsa GirisSecim'e git
+      theme: AppTheme.theme,
       home: isLoggedIn
           ? HomePage(adSoyad: userName)
           : const GirisSecimSayfasi(),
@@ -57,217 +48,535 @@ class VektorApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
-  final String adSoyad; // Giriş yapan kullanıcının ismini tutan değişken
-
-  // Parametreyi constructor'a ekledik
+class HomePage extends StatefulWidget {
+  final String adSoyad;
   const HomePage({super.key, required this.adSoyad});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
+  String _getInitials(String name) {
+    final parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return name.isNotEmpty ? name[0].toUpperCase() : '?';
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        title: const Text(
-          "VEKTÖR",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
-          ),
-        ),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: const AssetImage("assets/image.png"),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withValues(alpha: 0.5),
-              BlendMode.darken,
-            ),
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
-              // Üst Bilgi Kartı
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfilSayfasi(adSoyad: adSoyad),
-                    ),
-                  );
-                },
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.85),
-                    borderRadius: BorderRadius.circular(16),
+      backgroundColor: AppColors.surface,
+      body: CustomScrollView(
+        slivers: [
+          // Üst başlık
+          SliverAppBar(
+            expandedHeight: 200,
+            pinned: true,
+            backgroundColor: AppColors.primary,
+            automaticallyImplyLeading: false,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppColors.primary, Color(0xFF0D47A1)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  child: Row(
-                    children: [
-                      const CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Color(0xFFE0E6ED),
-                        child: Icon(Icons.person, size: 35, color: Color(0xFF6C7B8A)),
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Hoş geldiniz,",
-                            style: TextStyle(color: Color(0xFF2E3D49), fontSize: 14),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            adSoyad,
-                            style: const TextStyle(
-                              color: Color(0xFF2E3D49),
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                ),
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Üst bar
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.crisis_alert_rounded,
+                                    color: Colors.white70, size: 18),
+                                const SizedBox(width: 6),
+                                const Text(
+                                  "VEKTÖR",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 3,
+                                  ),
+                                ),
+                              ],
                             ),
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ProfilSayfasi(
+                                      adSoyad: widget.adSoyad),
+                                ),
+                              ),
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white.withValues(alpha: 0.15),
+                                  border: Border.all(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.4),
+                                      width: 1.5),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    _getInitials(widget.adSoyad),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        // Karşılama
+                        Text(
+                          "Merhaba,",
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            fontSize: 14,
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          widget.adSoyad,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        // Durum bandı
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 7,
+                                height: 7,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.greenAccent,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              const Text(
+                                "Sistem Aktif",
+                                style: TextStyle(
+                                    color: Colors.white70, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Acil Durum İşlemleri",
+            ),
+          ),
+          // İçerik
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Acil durum banner
+                  _buildEmergencyBanner(context),
+                  const SizedBox(height: 24),
+                  _buildSectionLabel("Acil Durum İşlemleri"),
+                  const SizedBox(height: 14),
+                  _buildMainGrid(context),
+                  const SizedBox(height: 24),
+                  _buildSectionLabel("Bilgi & Hazırlık"),
+                  const SizedBox(height: 14),
+                  _buildInfoCards(),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: _buildBottomNav(),
+    );
+  }
+
+  Widget _buildEmergencyBanner(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const AcilYardimSayfasi()),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF7F0000), Color(0xFFB71C1C)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.accent.withValues(alpha: 0.35),
+              blurRadius: 15,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: const Icon(Icons.campaign_rounded,
+                  color: Colors.white, size: 30),
+            ),
+            const SizedBox(width: 14),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "ACİL YARDIM İSTE",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
                     ),
                   ),
-                ),
+                  SizedBox(height: 3),
+                  Text(
+                    "Tehlike anında hemen yardım çağır",
+                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                  ),
+                ],
               ),
-              const SizedBox(height: 15),
-              // Kartlar Grid'i
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  children: [
-                    _buildEmergencyCard(
-                      context,
-                      title: "YARDIM İSTE",
-                      subtitle: "Talep oluştur",
-                      icon: Icons.campaign,
-                      cardColor: Colors.white.withValues(alpha: 0.9),
-                      iconColor: Colors.redAccent,
-                      targetPage: const AcilYardimSayfasi(),
-                    ),
-                    _buildEmergencyCard(
-                      context,
-                      title: "GÖNÜLLÜ OL",
-                      subtitle: "Destek ol",
-                      icon: Icons.handshake,
-                      cardColor: Colors.white.withValues(alpha: 0.9),
-                      iconColor: Colors.blueAccent,
-                    ),
-                    _buildEmergencyCard(
-                      context,
-                      title: "ACİL HARİTA",
-                      subtitle: "Güvenli bölgeler",
-                      icon: Icons.map,
-                      cardColor: Colors.white.withValues(alpha: 0.9),
-                      iconColor: Colors.orange,
-                      targetPage: AcilHaritaSayfasi(), // Sayfayı buraya bağladık
-                    ),
-                    _buildEmergencyCard(
-                      context,
-                      title: "DESTEK OL",
-                      subtitle: "Maddi yardım",
-                      icon: Icons.volunteer_activism,
-                      cardColor: Colors.white.withValues(alpha: 0.9),
-                      iconColor: Colors.purple,
-                    ),
-                  ],
-                ),
+            ),
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
               ),
-            ],
-          ),
+              child: const Icon(Icons.arrow_forward_ios_rounded,
+                  color: Colors.white, size: 16),
+            ),
+          ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Hazırlık"),
-          BottomNavigationBarItem(icon: Icon(Icons.warning), label: "Uyarı"),
-          BottomNavigationBarItem(icon: Icon(Icons.build), label: "Müdahale"),
-          BottomNavigationBarItem(icon: Icon(Icons.healing), label: "İyileştirme"),
-        ],
       ),
     );
   }
 
-  Widget _buildEmergencyCard(BuildContext context,
-      {required String title,
-        required String subtitle,
-        required IconData icon,
-        required Color cardColor,
-        required Color iconColor,
-        Widget? targetPage}) {
-    return InkWell(
+  Widget _buildSectionLabel(String label) {
+    return Text(
+      label.toUpperCase(),
+      style: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.bold,
+        color: AppColors.textSecondary,
+        letterSpacing: 1,
+      ),
+    );
+  }
+
+  Widget _buildMainGrid(BuildContext context) {
+    final List<Map<String, dynamic>> cards = [
+      {
+        'title': 'GÖNÜLLÜ OL',
+        'subtitle': 'Destek ekibine katıl',
+        'icon': Icons.handshake_rounded,
+        'color': AppColors.secondary,
+        'bgColor': const Color(0xFFE3F2FD),
+        'targetPage': null,
+      },
+      {
+        'title': 'ACİL HARİTA',
+        'subtitle': 'Güvenli bölgeler',
+        'icon': Icons.map_rounded,
+        'color': AppColors.accentOrange,
+        'bgColor': const Color(0xFFFFF3E0),
+        'targetPage': AcilHaritaSayfasi(),
+      },
+      {
+        'title': 'DESTEK OL',
+        'subtitle': 'Maddi yardım',
+        'icon': Icons.volunteer_activism_rounded,
+        'color': const Color(0xFF6A1B9A),
+        'bgColor': const Color(0xFFF3E5F5),
+        'targetPage': null,
+      },
+      {
+        'title': 'HABERLER',
+        'subtitle': 'Güncel duyurular',
+        'icon': Icons.newspaper_rounded,
+        'color': AppColors.accentGreen,
+        'bgColor': const Color(0xFFE8F5E9),
+        'targetPage': null,
+      },
+    ];
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 14,
+        mainAxisSpacing: 14,
+        childAspectRatio: 1.05,
+      ),
+      itemCount: cards.length,
+      itemBuilder: (context, index) {
+        final card = cards[index];
+        return _buildCard(context, card);
+      },
+    );
+  }
+
+  Widget _buildCard(BuildContext context, Map<String, dynamic> card) {
+    final bool hasTarget = card['targetPage'] != null;
+    return GestureDetector(
       onTap: () {
-        if (targetPage != null) {
+        if (hasTarget) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => targetPage),
+            MaterialPageRoute(builder: (_) => card['targetPage']),
           );
         }
       },
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: cardColor,
-          borderRadius: BorderRadius.circular(20),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: const [
+            BoxShadow(
+                color: Colors.black12, blurRadius: 8, offset: Offset(0, 3))
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: iconColor, size: 40),
-            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color: card['bgColor'],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(card['icon'], color: card['color'], size: 26),
+                ),
+                if (!hasTarget)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Text(
+                      "Yakında",
+                      style: TextStyle(
+                          fontSize: 9,
+                          color: AppColors.textSecondary,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+              ],
+            ),
+            const Spacer(),
             Text(
-              title,
+              card['title'],
               style: const TextStyle(
-                color: Color(0xFF2E3D49),
-                fontSize: 14,
+                color: AppColors.textPrimary,
+                fontSize: 13,
                 fontWeight: FontWeight.bold,
               ),
             ),
+            const SizedBox(height: 3),
             Text(
-              subtitle,
-              style: const TextStyle(color: Color(0xFF6C7B8A), fontSize: 11),
+              card['subtitle'],
+              style: const TextStyle(
+                  color: AppColors.textSecondary, fontSize: 10),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoCards() {
+    final List<Map<String, dynamic>> infoItems = [
+      {
+        'icon': Icons.checklist_rounded,
+        'title': 'Afet Çantası Hazırla',
+        'subtitle': '72 saatlik hazırlık listesi',
+        'color': AppColors.secondary,
+      },
+      {
+        'icon': Icons.phone_in_talk_rounded,
+        'title': 'Acil Numaralar',
+        'subtitle': 'AFAD, 112, İtfaiye',
+        'color': AppColors.accent,
+      },
+    ];
+
+    return Column(
+      children: infoItems.map((item) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: const [
+              BoxShadow(
+                  color: Colors.black12, blurRadius: 6, offset: Offset(0, 2))
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: (item['color'] as Color).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(item['icon'], color: item['color'], size: 24),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item['title'],
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      item['subtitle'],
+                      style: const TextStyle(
+                          fontSize: 12, color: AppColors.textSecondary),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios_rounded,
+                  size: 14, color: AppColors.textSecondary),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildBottomNav() {
+    final items = [
+      {'icon': Icons.home_rounded, 'label': 'Ana Sayfa'},
+      {'icon': Icons.warning_rounded, 'label': 'Uyarılar'},
+      {'icon': Icons.build_rounded, 'label': 'Müdahale'},
+      {'icon': Icons.healing_rounded, 'label': 'İyileştirme'},
+    ];
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black12, blurRadius: 10, offset: Offset(0, -2))
+        ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(items.length, (index) {
+              final isSelected = _selectedIndex == index;
+              return GestureDetector(
+                onTap: () => setState(() => _selectedIndex = index),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? AppColors.primary.withValues(alpha: 0.08)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        items[index]['icon'] as IconData,
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.textSecondary,
+                        size: 24,
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        items[index]['label'] as String,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: isSelected
+                              ? AppColors.primary
+                              : AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ),
         ),
       ),
     );

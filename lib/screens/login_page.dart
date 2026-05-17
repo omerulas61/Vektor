@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Sorgu için gerekli
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vektor/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vektor/screens/kurum_ana_sayfasi.dart';
+import 'package:vektor/theme/app_theme.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,17 +12,18 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  // Verileri okumak için Controller'lar
   final TextEditingController _userAdSoyadController = TextEditingController();
   final TextEditingController _userSifreController = TextEditingController();
-
   final TextEditingController _kurumAdController = TextEditingController();
   final TextEditingController _kurumSifreController = TextEditingController();
 
   bool _yukleniyor = false;
+  bool _userSifreGizli = true;
+  bool _kurumSifreGizli = true;
 
   @override
   void initState() {
@@ -39,18 +41,14 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     super.dispose();
   }
 
-  // Kullanıcı Giriş Kontrolü (Firebase Sorgusu)
   Future<void> _kullaniciGirisYap() async {
-    // Boş alan kontrolü
-    if (_userAdSoyadController.text.trim().isEmpty || _userSifreController.text.trim().isEmpty) {
+    if (_userAdSoyadController.text.trim().isEmpty ||
+        _userSifreController.text.trim().isEmpty) {
       _hataGoster("Lütfen tüm alanları doldurun.");
       return;
     }
-
     setState(() => _yukleniyor = true);
-
     try {
-      // Veritabanında Ad Soyad ve Şifre ikilisini arıyoruz
       var sorgu = await FirebaseFirestore.instance
           .collection('Kullanicilar')
           .where('adSoyad', isEqualTo: _userAdSoyadController.text.trim())
@@ -58,14 +56,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           .get();
 
       if (sorgu.docs.isNotEmpty) {
-        // Firestore'daki veriyi bir Map (sözlük) olarak alıyoruz
         var userDoc = sorgu.docs.first.data();
-
-        // --- HAFIZAYA KAYIT (Shared Preferences) ---
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
-
-        // Firestore'daki alan isimlerinle birebir eşliyoruz:
         await prefs.setString('userName', userDoc['adSoyad'] ?? "");
         await prefs.setString('userBlood', userDoc['kanGrubu'] ?? "");
         await prefs.setString('userPhone', userDoc['telefon'] ?? "");
@@ -76,15 +69,13 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => HomePage(adSoyad: userDoc['adSoyad'] ?? "Kullanıcı"),
+              builder: (_) =>
+                  HomePage(adSoyad: userDoc['adSoyad'] ?? "Kullanıcı"),
             ),
           );
         }
       } else {
-        // Eşleşme yoksa hata göster
-        if (mounted) {
-          _hataGoster("Hatalı Ad Soyad veya Şifre!");
-        }
+        _hataGoster("Hatalı Ad Soyad veya Şifre!");
       }
     } catch (e) {
       _hataGoster("Bir hata oluştu: ${e.toString()}");
@@ -94,33 +85,27 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   }
 
   Future<void> _kurumGirisYap() async {
-    String ad = _kurumAdController.text.trim();
-    String sifre = _kurumSifreController.text.trim();
-
-    if (ad.isEmpty || sifre.isEmpty) {
+    if (_kurumAdController.text.trim().isEmpty ||
+        _kurumSifreController.text.trim().isEmpty) {
       _hataGoster("Lütfen kurum adı ve şifresini girin.");
       return;
     }
-
     setState(() => _yukleniyor = true);
-
     try {
-      // Kurumlar koleksiyonunda eşleşme arıyoruz
       var sorgu = await FirebaseFirestore.instance
           .collection('Kurumlar')
-          .where('kurum_adi', isEqualTo: ad)
-          .where('kurum_sifre', isEqualTo: sifre)
+          .where('kurum_adi', isEqualTo: _kurumAdController.text.trim())
+          .where('kurum_sifre', isEqualTo: _kurumSifreController.text.trim())
           .get();
 
       if (sorgu.docs.isNotEmpty) {
-        // Giriş başarılı
         var kurumDoc = sorgu.docs.first.data();
-
         if (mounted) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => KurumAnaSayfasi(kurumAdi: kurumDoc['kurum_adi'] ?? "Kurum"),
+              builder: (_) =>
+                  KurumAnaSayfasi(kurumAdi: kurumDoc['kurum_adi'] ?? "Kurum"),
             ),
           );
         }
@@ -134,97 +119,235 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     }
   }
 
-
-
   void _hataGoster(String mesaj) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(mesaj), backgroundColor: Colors.red),
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.error_outline, color: Colors.white),
+            const SizedBox(width: 8),
+            Expanded(child: Text(mesaj)),
+          ],
+        ),
+        backgroundColor: AppColors.accent,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Giriş Yap"),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(icon: Icon(Icons.person), text: "Kullanıcı"),
-            Tab(icon: Icon(Icons.business), text: "Kurum"),
-          ],
-        ),
-      ),
-      body: _yukleniyor
-          ? const Center(child: CircularProgressIndicator())
-          : TabBarView(
-        controller: _tabController,
+      backgroundColor: AppColors.surface,
+      body: Column(
         children: [
-          _buildUserLoginForm(),
-          _buildAgencyLoginForm(),
+          // Üst başlık alanı
+          Container(
+            color: AppColors.primary,
+            child: SafeArea(
+              bottom: false,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                              color: Colors.white),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        const Expanded(
+                          child: Text(
+                            "Giriş Yap",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 48),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TabBar(
+                    controller: _tabController,
+                    indicatorColor: Colors.white,
+                    indicatorWeight: 3,
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.white54,
+                    labelStyle: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 14),
+                    tabs: const [
+                      Tab(icon: Icon(Icons.person_rounded), text: "Kullanıcı"),
+                      Tab(
+                          icon: Icon(Icons.account_balance_rounded),
+                          text: "Kurum"),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // İçerik
+          Expanded(
+            child: _yukleniyor
+                ? const Center(
+                    child: CircularProgressIndicator(
+                        color: AppColors.secondary))
+                : TabBarView(
+                    controller: _tabController,
+                    children: [
+                      _buildUserLoginForm(),
+                      _buildAgencyLoginForm(),
+                    ],
+                  ),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildUserLoginForm() {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 20),
-          _buildInput(label: "Ad Soyad", icon: Icons.person_outline, controller: _userAdSoyadController),
-          _buildInput(label: "Şifre", icon: Icons.lock_outline, isPassword: true, controller: _userSifreController),
-          const SizedBox(height: 30),
-          _buildLoginButton("Giriş Yap", _kullaniciGirisYap),
+          const SizedBox(height: 16),
+          _buildSectionHeader(
+              "Kullanıcı Girişi", Icons.person_rounded, AppColors.secondary),
+          const SizedBox(height: 24),
+          _buildInput(
+            label: "Ad Soyad",
+            icon: Icons.badge_rounded,
+            controller: _userAdSoyadController,
+          ),
+          const SizedBox(height: 16),
+          _buildInput(
+            label: "Şifre",
+            icon: Icons.lock_rounded,
+            controller: _userSifreController,
+            isPassword: true,
+            isPasswordVisible: !_userSifreGizli,
+            onTogglePassword: () =>
+                setState(() => _userSifreGizli = !_userSifreGizli),
+          ),
+          const SizedBox(height: 32),
+          _buildLoginButton("GİRİŞ YAP", _kullaniciGirisYap,
+              AppColors.secondary),
         ],
       ),
     );
   }
 
   Widget _buildAgencyLoginForm() {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 20),
-          _buildInput(label: "Kurum Adı", icon: Icons.account_balance, controller: _kurumAdController),
-          _buildInput(label: "Kurum Şifresi", icon: Icons.vpn_key, isPassword: true, controller: _kurumSifreController),
-          const SizedBox(height: 30),
-          // BURASI GÜNCELLENDİ:
-          _buildLoginButton("Kurum Girişi", _kurumGirisYap),
+          const SizedBox(height: 16),
+          _buildSectionHeader(
+              "Kurum Girişi", Icons.account_balance_rounded, const Color(0xFF7B1FA2)),
+          const SizedBox(height: 24),
+          _buildInput(
+            label: "Kurum Adı",
+            icon: Icons.business_rounded,
+            controller: _kurumAdController,
+          ),
+          const SizedBox(height: 16),
+          _buildInput(
+            label: "Kurum Şifresi",
+            icon: Icons.vpn_key_rounded,
+            controller: _kurumSifreController,
+            isPassword: true,
+            isPasswordVisible: !_kurumSifreGizli,
+            onTogglePassword: () =>
+                setState(() => _kurumSifreGizli = !_kurumSifreGizli),
+          ),
+          const SizedBox(height: 32),
+          _buildLoginButton(
+              "KURUM GİRİŞİ", _kurumGirisYap, const Color(0xFF7B1FA2)),
         ],
       ),
     );
   }
 
-  Widget _buildInput({required String label, required IconData icon, required TextEditingController controller, bool isPassword = false}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
-      child: TextField(
-        controller: controller,
-        obscureText: isPassword,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+  Widget _buildSectionHeader(String title, IconData icon, Color color) {
+    return Row(
+      children: [
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: color, size: 24),
         ),
+        const SizedBox(width: 12),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInput({
+    required String label,
+    required IconData icon,
+    required TextEditingController controller,
+    bool isPassword = false,
+    bool isPasswordVisible = false,
+    VoidCallback? onTogglePassword,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: isPassword && !isPasswordVisible,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  isPasswordVisible
+                      ? Icons.visibility_off_rounded
+                      : Icons.visibility_rounded,
+                  color: AppColors.textSecondary,
+                ),
+                onPressed: onTogglePassword,
+              )
+            : null,
       ),
     );
   }
 
-  Widget _buildLoginButton(String text, VoidCallback onPressed) {
+  Widget _buildLoginButton(String text, VoidCallback onPressed, Color color) {
     return SizedBox(
       width: double.infinity,
-      height: 55,
+      height: 56,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue.shade800,
+          backgroundColor: color,
           foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          elevation: 3,
         ),
         onPressed: onPressed,
-        child: Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
+        child: Text(text,
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 1)),
       ),
     );
   }

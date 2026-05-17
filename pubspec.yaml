@@ -28,3 +28,7 @@ flutter:
 
   assets:
     - assets/image.png
+    - assets/enkaz.png
+    - assets/yarali.png
+    - assets/yangin.png
+    - assets/toplanma.png
