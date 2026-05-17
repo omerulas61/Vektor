@@ -27,6 +27,10 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/gonullu.png
+    - assets/harita.png
+    - assets/destek.png
+    - assets/haberler.png
     - assets/image.png
     - assets/enkaz.png
     - assets/yarali.png

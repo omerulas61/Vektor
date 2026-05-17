@@ -47,7 +47,7 @@ class GirisSecimSayfasi extends StatelessWidget {
                   // Seçenek Butonları
                   _buildOptionCard(
                     context,
-                    title: "KULLANICI GİRİŞİ",
+                    title: "KULLANICI KAYIT OL",
                     subtitle: "Yardım istemek veya gönüllü olmak için",
                     icon: Icons.person_rounded,
                     gradient: const LinearGradient(
@@ -59,7 +59,7 @@ class GirisSecimSayfasi extends StatelessWidget {
                   const SizedBox(height: 16),
                   _buildOptionCard(
                     context,
-                    title: "KURUM GİRİŞİ",
+                    title: "KURUM KAYIT OL ",
                     subtitle: "Resmi kurum ve STK yönetimi için",
                     icon: Icons.account_balance_rounded,
                     gradient: const LinearGradient(

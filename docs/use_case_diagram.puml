@@ -1,0 +1,124 @@
+@startuml Vektor_UseCaseDiagram
+
+title Vektör - Afet Koordinasyon Sistemi\nUse Case Diyagramı
+
+left to right direction
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor LightYellow
+  BorderColor DarkOrange
+  ArrowColor DarkBlue
+}
+skinparam actor {
+  BackgroundColor LightBlue
+  BorderColor DarkBlue
+}
+
+' ─── AKTÖRLER ───────────────────────────────────────────
+actor "Kullanıcı\n(Vatandaş)" as User
+actor "Kurum\n(STK / Resmi)" as Kurum
+actor "Firebase\nFirestore" as Firebase <<system>>
+actor "Google Maps\n/ Konum" as Maps <<system>>
+
+' ─── SİSTEM SINIRI ──────────────────────────────────────
+rectangle "Vektör Afet Koordinasyon Sistemi" {
+
+  ' === KİMLİK YÖNETİMİ ===
+  package "Kimlik Yönetimi" {
+    usecase "Kullanıcı Kaydı Oluştur\n(Ad, Tel, Şifre, Kan Grubu,\nAcil Yakın Bilgisi)" as UC_UserRegister
+    usecase "Kurum Kaydı Oluştur\n(Kurum Adı, Şifre)" as UC_KurumRegister
+    usecase "Kullanıcı Girişi Yap\n(Ad Soyad + Şifre)" as UC_UserLogin
+    usecase "Kurum Girişi Yap\n(Kurum Adı + Şifre)" as UC_KurumLogin
+    usecase "Oturumu Kapat" as UC_Logout
+    usecase "Oturumu Hatırla\n(Otomatik Giriş)" as UC_AutoLogin
+  }
+
+  ' === KULLANICI İŞLEMLERİ ===
+  package "Kullanıcı İşlemleri" {
+    usecase "Profil Bilgilerini Görüntüle\n(Kan Grubu, Yakın Kişi vb.)" as UC_ViewProfile
+
+    usecase "Acil Yardım Talebi Oluştur" as UC_CreateRequest
+    usecase "Enkaz Altında Bildirimi Gönder" as UC_Enkaz
+    usecase "Yaralı Bildirimi Gönder" as UC_Yarali
+    usecase "Yangın / Patlama Bildirimi Gönder" as UC_Yangin
+    usecase "Su Baskını Bildirimi Gönder" as UC_Sel
+
+    usecase "Acil Haritayı Görüntüle\n(Canlı Noktalar)" as UC_ViewMap
+    usecase "Mevcut Konuma Git" as UC_GoToLocation
+
+    usecase "Gönüllü Ol\n(Destek Teklif Et)" as UC_Volunteer
+    usecase "Maddi Destek Ol" as UC_Donate
+  }
+
+  ' === KURUM İŞLEMLERİ ===
+  package "Kurum İşlemleri" {
+    usecase "Gelen Talepleri Görüntüle\n(Aktif Yardım Çağrıları)" as UC_ViewRequests
+    usecase "Afet Haritasını Yönet\n(Canlı Yoğunluk Takibi)" as UC_ManageMap
+    usecase "Toplanma Noktası Ekle" as UC_AddPoint
+    usecase "Toplanma Noktası / Bildirimi Sil" as UC_DeletePoint
+    usecase "Ekip Yönetimi\n(Saha Personeli Takibi)" as UC_TeamMgmt
+    usecase "Lojistik Yönetimi\n(Kaynak & Depo)" as UC_Logistics
+  }
+
+  ' === ORTAK ===
+  package "Ortak İşlevler" {
+    usecase "Harita Üzerinde\nKonum Bildir" as UC_ReportLocation
+    usecase "Firestore'dan\nCanlı Veri Dinle" as UC_LiveStream
+  }
+}
+
+' ─── KULLANICI İLİŞKİLERİ ────────────────────────────────
+User --> UC_UserRegister
+User --> UC_UserLogin
+User --> UC_AutoLogin
+User --> UC_Logout
+User --> UC_ViewProfile
+
+User --> UC_CreateRequest
+UC_CreateRequest ..> UC_Enkaz   : <<extend>>
+UC_CreateRequest ..> UC_Yarali  : <<extend>>
+UC_CreateRequest ..> UC_Yangin  : <<extend>>
+UC_CreateRequest ..> UC_Sel     : <<extend>>
+
+UC_Enkaz  ..> UC_ReportLocation : <<include>>
+UC_Yarali ..> UC_ReportLocation : <<include>>
+UC_Yangin ..> UC_ReportLocation : <<include>>
+UC_Sel    ..> UC_ReportLocation : <<include>>
+
+User --> UC_ViewMap
+User --> UC_Volunteer
+User --> UC_Donate
+
+' ─── KURUM İLİŞKİLERİ ────────────────────────────────────
+Kurum --> UC_KurumRegister
+Kurum --> UC_KurumLogin
+Kurum --> UC_ViewRequests
+Kurum --> UC_ManageMap
+UC_ManageMap ..> UC_AddPoint    : <<extend>>
+UC_ManageMap ..> UC_DeletePoint : <<extend>>
+Kurum --> UC_TeamMgmt
+Kurum --> UC_Logistics
+
+' ─── ORTAK İLİŞKİLER ─────────────────────────────────────
+UC_ViewMap      ..> UC_LiveStream    : <<include>>
+UC_ManageMap    ..> UC_LiveStream    : <<include>>
+UC_ViewMap      ..> UC_GoToLocation  : <<include>>
+UC_ManageMap    ..> UC_GoToLocation  : <<include>>
+
+' ─── SİSTEM BAĞLANTILARI ─────────────────────────────────
+UC_UserRegister   --> Firebase
+UC_KurumRegister  --> Firebase
+UC_UserLogin      --> Firebase
+UC_KurumLogin     --> Firebase
+UC_ReportLocation --> Firebase
+UC_AddPoint       --> Firebase
+UC_DeletePoint    --> Firebase
+UC_LiveStream     --> Firebase
+
+UC_ReportLocation --> Maps
+UC_GoToLocation   --> Maps
+UC_ViewMap        --> Maps
+UC_ManageMap      --> Maps
+
+@enduml

@@ -1,0 +1,128 @@
+@startuml Vektor_Hierarchical_UseCase
+
+title Vektör - Afet Koordinasyon Sistemi\nKullanım Senaryoları ve Aktör Etkileşimleri
+
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam rectangle {
+  BackgroundColor White
+  BorderColor #333333
+  FontStyle bold
+  FontSize 10
+  RoundCorner 8
+}
+skinparam arrow {
+  Color #333333
+  Thickness 1.5
+}
+skinparam linetype ortho
+
+' ══════════════════════════════════════════════
+'  AKTÖRLER (düz metin, kutusuz)
+' ══════════════════════════════════════════════
+rectangle "KULLANICI" as KULLANICI_TOP #White;line.bold;text:bold
+rectangle "KURUM" as KURUM_ACT #White;line.bold;text:bold
+rectangle "KULLANICI" as KULLANICI_MID #White;line.bold;text:bold
+
+' ══════════════════════════════════════════════
+'  ORTAK GİRİŞ
+' ══════════════════════════════════════════════
+rectangle "GİRİŞ YAP /\nKAYIT OL" as GIRIS
+
+' ══════════════════════════════════════════════
+'  KULLANICI DALI — SOL
+' ══════════════════════════════════════════════
+rectangle "KULLANICI\nANA SAYFASI" as KULLANICI_ANA
+
+rectangle "PROFİL\nGÖRÜNTÜLE" as PROFIL
+
+rectangle "ACİL YARDIM\nTALEBİ" as ACIL_YARDIM
+
+rectangle "ACİL\nHARİTA" as HARITA_USER
+
+rectangle "ENKAZ\nALTINDAYIM" as ENKAZ
+rectangle "YARALI\nVAR" as YARALI
+rectangle "YANGIN /\nPATLAMA" as YANGIN
+rectangle "SU\nBASKINI" as SEL
+
+rectangle "KONUM\nBİLDİR" as KONUM_BILDIR
+
+rectangle "GÖNÜLLÜ\nOL" as GONULLU
+rectangle "MADDİ\nDESTEK OL" as DESTEK
+
+' ══════════════════════════════════════════════
+'  KURUM DALI — SAĞ
+' ══════════════════════════════════════════════
+rectangle "KURUM\nPANELİ" as KURUM_PANEL
+
+rectangle "GELEN\nTALEPLER" as GELEN_TALEPLER
+
+rectangle "AFET\nHARİTASI" as HARITA_KURUM
+
+rectangle "EKİP\nYÖNETİMİ" as EKIP
+
+rectangle "LOJİSTİK\nYÖNETİMİ" as LOJISTIK
+
+rectangle "TOPLANMA\nNOKTASI EKLE" as NOKTA_EKLE
+rectangle "BİLDİRİM /\nNOKTA SİL" as NOKTA_SIL
+
+' ══════════════════════════════════════════════
+'  ORTAK KONTROL
+' ══════════════════════════════════════════════
+rectangle "FİRESTORE\nCANLI VERİ\nSTREAM" as FIRESTORE
+
+' ══════════════════════════════════════════════
+'  BAĞLANTILAR
+' ══════════════════════════════════════════════
+
+' Üst aktör → Giriş
+KULLANICI_TOP -down-> GIRIS
+
+' Giriş → iki ana dal
+GIRIS -left-> KULLANICI_ANA
+GIRIS -right-> KURUM_PANEL
+
+' --- KULLANICI DALI ---
+KULLANICI_ANA -down-> PROFIL
+KULLANICI_ANA -down-> ACIL_YARDIM
+KULLANICI_ANA -down-> HARITA_USER
+KULLANICI_ANA -down-> GONULLU
+KULLANICI_ANA -down-> DESTEK
+
+' Acil yardım alt türleri
+ACIL_YARDIM -down-> ENKAZ
+ACIL_YARDIM -down-> YARALI
+ACIL_YARDIM -down-> YANGIN
+ACIL_YARDIM -down-> SEL
+
+' Her alt tür → konum bildir
+ENKAZ  -down-> KONUM_BILDIR
+YARALI -down-> KONUM_BILDIR
+YANGIN -down-> KONUM_BILDIR
+SEL    -down-> KONUM_BILDIR
+
+' Kullanıcı aktörü (orta) → harita ve konum
+KULLANICI_MID -right-> HARITA_USER : haritayı\ngörüntüler
+KULLANICI_MID -down-> KONUM_BILDIR : konumunu\nbildirir
+
+' --- KURUM DALI ---
+KURUM_ACT -down-> KURUM_PANEL
+
+KURUM_PANEL -down-> GELEN_TALEPLER
+KURUM_PANEL -down-> HARITA_KURUM
+KURUM_PANEL -down-> EKIP
+KURUM_PANEL -down-> LOJISTIK
+
+' Harita yönetimi alt işlemleri
+HARITA_KURUM -down-> NOKTA_EKLE
+HARITA_KURUM -down-> NOKTA_SIL
+
+' Firestore bağlantıları
+KONUM_BILDIR  -down-> FIRESTORE : yazar
+NOKTA_EKLE    -down-> FIRESTORE : yazar
+NOKTA_SIL     -down-> FIRESTORE : siler
+HARITA_USER   -right-> FIRESTORE : okur (stream)
+HARITA_KURUM  -left->  FIRESTORE : okur (stream)
+GELEN_TALEPLER -down-> FIRESTORE : okur
+
+@enduml

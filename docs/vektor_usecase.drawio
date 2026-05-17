@@ -1,0 +1,261 @@
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="Kiro" version="21.0.0" type="device">
+  <diagram name="Vektör Use Case" id="vektor-usecase">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- BAŞLIK                                      -->
+        <!-- ═══════════════════════════════════════════ -->
+        <mxCell id="title" value="Vektör – Afet Koordinasyon Sistemi&#xa;Kullanım Senaryoları ve Aktör Etkileşimleri" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="427" y="20" width="800" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- AKTÖRLER — ÜST                             -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- KULLANICI (üst) -->
+        <mxCell id="act_kullanici" value="KULLANICI" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="480" y="90" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- KURUM -->
+        <mxCell id="act_kurum" value="KURUM" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="90" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- GİRİŞ YAP / KAYIT OL                       -->
+        <!-- ═══════════════════════════════════════════ -->
+        <mxCell id="giris" value="GİRİŞ YAP /&#xa;KAYIT OL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="737" y="160" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- KULLANICI → GİRİŞ -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="act_kullanici" target="giris" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- KURUM → GİRİŞ -->
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="act_kurum" target="giris" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- KULLANICI ANA SAYFASI                       -->
+        <!-- ═══════════════════════════════════════════ -->
+        <mxCell id="kullanici_ana" value="KULLANICI&#xa;ANA SAYFASI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#d6b656;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="340" y="280" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="giris" target="kullanici_ana" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- KURUM PANELİ                                -->
+        <!-- ═══════════════════════════════════════════ -->
+        <mxCell id="kurum_panel" value="KURUM&#xa;PANELİ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="280" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="giris" target="kurum_panel" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- KULLANICI DALI — 2. SEVİYE                  -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- PROFİL -->
+        <mxCell id="profil" value="PROFİL&#xa;GÖRÜNTÜLE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=#333333;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="410" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kullanici_ana" target="profil" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ACİL YARDIM TALEBİ -->
+        <mxCell id="acil_yardim" value="ACİL YARDIM&#xa;TALEBİ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="220" y="410" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kullanici_ana" target="acil_yardim" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ACİL HARİTA (kullanıcı) -->
+        <mxCell id="harita_user" value="ACİL&#xa;HARİTA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=#333333;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="390" y="410" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kullanici_ana" target="harita_user" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- GÖNÜLLÜ OL -->
+        <mxCell id="gonullu" value="GÖNÜLLÜ&#xa;OL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=#333333;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="550" y="410" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kullanici_ana" target="gonullu" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- MADDİ DESTEK OL -->
+        <mxCell id="destek" value="MADDİ&#xa;DESTEK OL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=#333333;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="710" y="410" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kullanici_ana" target="destek" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- ACİL YARDIM ALT TÜRLERİ — 3. SEVİYE        -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- ENKAZ -->
+        <mxCell id="enkaz" value="ENKAZ&#xa;ALTINDAYIM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcccc;strokeColor=#cc0000;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="540" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="acil_yardim" target="enkaz" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- YARALI -->
+        <mxCell id="yarali" value="YARALI&#xa;VAR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcccc;strokeColor=#cc0000;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="190" y="540" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="acil_yardim" target="yarali" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- YANGIN -->
+        <mxCell id="yangin" value="YANGIN /&#xa;PATLAMA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcccc;strokeColor=#cc0000;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="540" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="acil_yardim" target="yangin" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- SEL -->
+        <mxCell id="sel" value="SU&#xa;BASKINI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcccc;strokeColor=#cc0000;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="450" y="540" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="acil_yardim" target="sel" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- KONUM BİLDİR — 4. SEVİYE                   -->
+        <!-- ═══════════════════════════════════════════ -->
+        <mxCell id="konum_bildir" value="KONUM&#xa;BİLDİR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="240" y="670" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="enkaz"  target="konum_bildir" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="yarali" target="konum_bildir" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="yangin" target="konum_bildir" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="sel"    target="konum_bildir" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- KULLANICI (orta aktör) -->
+        <mxCell id="act_kullanici_mid" value="KULLANICI" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="480" y="670" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="e18" label="haritayı görüntüler" style="edgeStyle=orthogonalEdgeStyle;dashed=1;endArrow=open;endFill=0;" edge="1" source="act_kullanici_mid" target="harita_user" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e19" label="konumunu bildirir" style="edgeStyle=orthogonalEdgeStyle;dashed=1;endArrow=open;endFill=0;" edge="1" source="act_kullanici_mid" target="konum_bildir" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- KURUM DALI — 2. SEVİYE                      -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- GELEN TALEPLER -->
+        <mxCell id="gelen_talepler" value="GELEN&#xa;TALEPLER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=#333333;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="900" y="410" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e20" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kurum_panel" target="gelen_talepler" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- AFET HARİTASI (kurum) -->
+        <mxCell id="harita_kurum" value="AFET&#xa;HARİTASI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="410" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e21" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kurum_panel" target="harita_kurum" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- EKİP YÖNETİMİ -->
+        <mxCell id="ekip" value="EKİP&#xa;YÖNETİMİ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=#333333;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="410" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e22" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kurum_panel" target="ekip" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- LOJİSTİK YÖNETİMİ -->
+        <mxCell id="lojistik" value="LOJİSTİK&#xa;YÖNETİMİ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=#333333;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="410" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e23" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="kurum_panel" target="lojistik" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- HARİTA KURUM ALT İŞLEMLERİ — 3. SEVİYE     -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <!-- TOPLANMA NOKTASI EKLE -->
+        <mxCell id="nokta_ekle" value="TOPLANMA&#xa;NOKTASI EKLE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="990" y="540" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e24" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="harita_kurum" target="nokta_ekle" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- BİLDİRİM / NOKTA SİL -->
+        <mxCell id="nokta_sil" value="BİLDİRİM /&#xa;NOKTA SİL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcccc;strokeColor=#cc0000;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="540" width="130" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e25" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="harita_kurum" target="nokta_sil" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- FİRESTORE — ALT                             -->
+        <!-- ═══════════════════════════════════════════ -->
+        <mxCell id="firestore" value="FİRESTORE&#xa;CANLI VERİ" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="700" y="800" width="140" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Firestore bağlantıları -->
+        <mxCell id="ef1" label="yazar" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#7B1FA2;fontColor=#7B1FA2;fontSize=9;" edge="1" source="konum_bildir" target="firestore" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ef2" label="yazar" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#7B1FA2;fontColor=#7B1FA2;fontSize=9;" edge="1" source="nokta_ekle" target="firestore" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ef3" label="siler" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#C62828;fontColor=#C62828;fontSize=9;" edge="1" source="nokta_sil" target="firestore" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ef4" label="okur (stream)" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#1565C0;fontColor=#1565C0;fontSize=9;endArrow=open;endFill=0;" edge="1" source="harita_user" target="firestore" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ef5" label="okur (stream)" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#1565C0;fontColor=#1565C0;fontSize=9;endArrow=open;endFill=0;" edge="1" source="harita_kurum" target="firestore" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ef6" label="okur" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#1565C0;fontColor=#1565C0;fontSize=9;endArrow=open;endFill=0;" edge="1" source="gelen_talepler" target="firestore" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

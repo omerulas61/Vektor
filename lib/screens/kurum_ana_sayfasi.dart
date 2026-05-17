@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Canlı sayaçlar için eklendi
 import 'package:vektor/screens/acil_harita_sayfasi.dart';
 import 'package:vektor/screens/giris_secim_sayfasi.dart';
 import 'package:vektor/theme/app_theme.dart';
+import 'package:vektor/screens/gelen_talepler_sayfasi.dart';
 
 class KurumAnaSayfasi extends StatefulWidget {
   final String kurumAdi;
@@ -12,7 +14,7 @@ class KurumAnaSayfasi extends StatefulWidget {
 }
 
 class _KurumAnaSayfasiState extends State<KurumAnaSayfasi> {
-  int _selectedIndex = 0;
+  // NOT: Kullanılmayan _selectedIndex değişkeni temizlendi.
 
   void _cikisYap() async {
     final bool? onay = await showDialog<bool>(
@@ -42,7 +44,7 @@ class _KurumAnaSayfasiState extends State<KurumAnaSayfasi> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const GirisSecimSayfasi()),
-        (route) => false,
+            (route) => false,
       );
     }
   }
@@ -111,8 +113,7 @@ class _KurumAnaSayfasiState extends State<KurumAnaSayfasi> {
                                   color: Colors.white,
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
-                                ),
-                                maxLines: 1,
+                                ),maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 6),
@@ -167,39 +168,67 @@ class _KurumAnaSayfasiState extends State<KurumAnaSayfasi> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Özet istatistikler
+                  // Canlı İstatistikler Bölümü
                   _buildStatsRow(),
                   const SizedBox(height: 24),
                   _buildSectionLabel("Yönetim ve Koordinasyon"),
                   const SizedBox(height: 14),
                   // Ana fonksiyon kartları
                   _buildMainGrid(context),
-                  const SizedBox(height: 24),
-                  _buildSectionLabel("Hızlı Erişim"),
-                  const SizedBox(height: 14),
-                  _buildQuickActions(context),
                   const SizedBox(height: 20),
+                  // NOT: "Hızlı Erişim" kartları bu alandan tamamen kaldırılmıştır.
                 ],
               ),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: _buildBottomNav(),
+      // NOT: Çalışmayan alt bar (bottomNavigationBar) tamamen kaldırılmıştır.
     );
   }
 
+  // DÜZENLENDİ: İstatistik sayıları tamamen canlı Firestore verilerine bağlandı
   Widget _buildStatsRow() {
     return Row(
       children: [
-        _buildStatCard("12", "Aktif Talep", Icons.notifications_active_rounded,
-            AppColors.accent),
+        // 1. Canlı Aktif İhbar/Talep Sayacı
+        StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('EtkinlikNoktalari').snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return _buildStatCard("...", "Aktif Talep", Icons.notifications_active_rounded, AppColors.accent);
+
+            // Çözülmemiş ve Toplanma Noktası olmayan gerçek afet ihbarlarını filtreleyip sayıyoruz
+            final aktifTalepler = snapshot.data!.docs.where((doc) {
+              var d = doc.data() as Map<String, dynamic>;
+              return d['tur'] != 'Toplanma Noktası' && d['durum'] != 'Çözüldü';
+            }).length;
+
+            return _buildStatCard(aktifTalepler.toString(), "Aktif Talep", Icons.notifications_active_rounded, AppColors.accent);
+          },
+        ),
         const SizedBox(width: 12),
-        _buildStatCard("5", "Saha Ekibi", Icons.groups_rounded,
-            AppColors.accentGreen),
+
+        // 2. Canlı Saha Ekibi / Başvuran Gönüllü Sayacı
+        StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('Gonulluler').snapshots(),
+          builder: (context, snapshot) {
+            final sahaEkibi = snapshot.hasData ? snapshot.data!.docs.length : 0;
+            return _buildStatCard(sahaEkibi.toString(), "Saha Ekibi", Icons.groups_rounded, AppColors.accentGreen);
+          },
+        ),
         const SizedBox(width: 12),
-        _buildStatCard("3", "Toplanma\nNoktası", Icons.location_on_rounded,
-            AppColors.secondary),
+
+        // 3. Canlı Güvenli Toplanma Noktası Sayacı
+        StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('EtkinlikNoktalari')
+              .where('tur', isEqualTo: 'Toplanma Noktası')
+              .snapshots(),
+          builder: (context, snapshot) {
+            final toplanmaNoktalari = snapshot.hasData ? snapshot.data!.docs.length : 0;
+            return _buildStatCard(toplanmaNoktalari.toString(), "Toplanma\nNoktası", Icons.location_on_rounded, AppColors.secondary);
+          },
+        ),
       ],
     );
   }
@@ -262,7 +291,7 @@ class _KurumAnaSayfasiState extends State<KurumAnaSayfasi> {
         'icon': Icons.notifications_active_rounded,
         'color': AppColors.accent,
         'bgColor': const Color(0xFFFFEBEE),
-        'targetPage': null,
+        'targetPage': const GelenTaleplerSayfasi(),
       },
       {
         'title': 'AFET HARİTASI',
@@ -274,7 +303,7 @@ class _KurumAnaSayfasiState extends State<KurumAnaSayfasi> {
       },
       {
         'title': 'EKİP YÖNETİMİ',
-        'subtitle': 'Saha personeli takibi',
+        'subtitle': 'Saha personeleli takibi',
         'icon': Icons.groups_rounded,
         'color': AppColors.accentGreen,
         'bgColor': const Color(0xFFE8F5E9),
@@ -391,131 +420,5 @@ class _KurumAnaSayfasiState extends State<KurumAnaSayfasi> {
     );
   }
 
-  Widget _buildQuickActions(BuildContext context) {
-    final List<Map<String, dynamic>> actions = [
-      {
-        'icon': Icons.announcement_rounded,
-        'label': 'Duyuru Yayınla',
-        'color': AppColors.secondary,
-      },
-      {
-        'icon': Icons.bar_chart_rounded,
-        'label': 'Raporlar',
-        'color': AppColors.accentGreen,
-      },
-      {
-        'icon': Icons.settings_rounded,
-        'label': 'Ayarlar',
-        'color': AppColors.textSecondary,
-      },
-    ];
-
-    return Row(
-      children: actions.map((action) {
-        return Expanded(
-          child: GestureDetector(
-            onTap: () {},
-            child: Container(
-              margin: EdgeInsets.only(
-                  right: action == actions.last ? 0 : 10),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                boxShadow: const [
-                  BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 6,
-                      offset: Offset(0, 2))
-                ],
-              ),
-              child: Column(
-                children: [
-                  Icon(action['icon'], color: action['color'], size: 26),
-                  const SizedBox(height: 6),
-                  Text(
-                    action['label'],
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildBottomNav() {
-    final items = [
-      {'icon': Icons.dashboard_rounded, 'label': 'Panel'},
-      {'icon': Icons.assignment_rounded, 'label': 'Görevler'},
-      {'icon': Icons.message_rounded, 'label': 'İletişim'},
-      {'icon': Icons.settings_rounded, 'label': 'Ayarlar'},
-    ];
-
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, -2))
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(items.length, (index) {
-              final isSelected = _selectedIndex == index;
-              return GestureDetector(
-                onTap: () => setState(() => _selectedIndex = index),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? AppColors.primary.withValues(alpha: 0.08)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        items[index]['icon'] as IconData,
-                        color: isSelected
-                            ? AppColors.primary
-                            : AppColors.textSecondary,
-                        size: 24,
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        items[index]['label'] as String,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: isSelected
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          color: isSelected
-                              ? AppColors.primary
-                              : AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
-          ),
-        ),
-      ),
-    );
-  }
+// NOT: _buildQuickActions ve _buildBottomNav fonksiyonları tamamen temizlenmiştir.
 }

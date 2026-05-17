@@ -1,0 +1,254 @@
+@startuml Vektor_ClassDiagram
+
+title Vektör - Afet Koordinasyon Sistemi\nUML Sınıf Diyagramı
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+skinparam packageStyle rectangle
+skinparam class {
+  BackgroundColor LightYellow
+  BorderColor DarkOrange
+  HeaderBackgroundColor Orange
+}
+skinparam package {
+  BackgroundColor AliceBlue
+  BorderColor DarkBlue
+}
+skinparam arrow {
+  Color DarkBlue
+}
+
+' ══════════════════════════════════════════════
+'  EXTERNAL / FIREBASE MODELLERİ
+' ══════════════════════════════════════════════
+package "Firebase / Veri Modelleri" #LightCyan {
+
+  class KullaniciModel {
+    + adSoyad : String
+    + telefon : String
+    + sifre : String
+    + kanGrubu : String
+    + yakinAdSoyad : String
+    + yakinTelefon : String
+    + kayitTarihi : Timestamp
+    --
+    ' Firestore koleksiyonu: Kullanicilar
+  }
+
+  class KurumModel {
+    + kurum_adi : String
+    + kurum_sifre : String
+    + kayit_tarihi : Timestamp
+    --
+    ' Firestore koleksiyonu: Kurumlar
+  }
+
+  class EtkinlikNoktasiModel {
+    + baslik : String
+    + tur : String
+    + konum : GeoPoint
+    + zaman : Timestamp
+    --
+    ' Firestore koleksiyonu: EtkinlikNoktalari
+    ' tur: "Toplanma Noktası" | "Enkaz Altında"
+    '      "Yaralı" | "Yangın" | "Sel"
+  }
+}
+
+' ══════════════════════════════════════════════
+'  FLUTTER WIDGET KATMANI
+' ══════════════════════════════════════════════
+
+' ─── GİRİŞ / KAYIT ───────────────────────────
+package "Kimlik Yönetimi Ekranları" #LightGreen {
+
+  class VektorApp <<StatelessWidget>> {
+    + isLoggedIn : bool
+    + userName : String
+    --
+    + build(context) : Widget
+  }
+
+  class GirisSecimSayfasi <<StatelessWidget>> {
+    --
+    + build(context) : Widget
+    - _buildOptionButton(...) : Widget
+  }
+
+  class KayitSayfasi <<StatefulWidget>> {
+    --
+  }
+
+  class KayitSayfasiState <<State>> {
+    - _formKey : GlobalKey<FormState>
+    - _adSoyadController : TextEditingController
+    - _telController : TextEditingController
+    - _sifreController : TextEditingController
+    - _yakinAdSoyadController : TextEditingController
+    - _yakinTelController : TextEditingController
+    - _kanGruplari : List<String>
+    - _secilenKanGrubu : String?
+    - _yukleniyor : bool
+    --
+    + initState() : void
+    + dispose() : void
+    - _verileriKaydet() : Future<void>
+    - _buildTextField(...) : Widget
+    + build(context) : Widget
+  }
+
+  class KurumKayitSayfasi <<StatefulWidget>> {
+    --
+  }
+
+  class KurumKayitSayfasiState <<State>> {
+    - _adController : TextEditingController
+    - _sifreController : TextEditingController
+    --
+    + dispose() : void
+    - _kurumKaydet() : Future<void>
+    + build(context) : Widget
+  }
+
+  class LoginPage <<StatefulWidget>> {
+    --
+  }
+
+  class LoginPageState <<State>> {
+    - _tabController : TabController
+    - _userAdSoyadController : TextEditingController
+    - _userSifreController : TextEditingController
+    - _kurumAdController : TextEditingController
+    - _kurumSifreController : TextEditingController
+    - _yukleniyor : bool
+    --
+    + initState() : void
+    + dispose() : void
+    - _kullaniciGirisYap() : Future<void>
+    - _kurumGirisYap() : Future<void>
+    - _hataGoster(mesaj: String) : void
+    - _buildUserLoginForm() : Widget
+    - _buildAgencyLoginForm() : Widget
+    - _buildInput(...) : Widget
+    - _buildLoginButton(...) : Widget
+    + build(context) : Widget
+  }
+}
+
+' ─── KULLANICI EKRANLARI ─────────────────────
+package "Kullanıcı Ekranları" #LightYellow {
+
+  class HomePage <<StatelessWidget>> {
+    + adSoyad : String
+    --
+    + build(context) : Widget
+    - _buildEmergencyCard(...) : Widget
+  }
+
+  class ProfilSayfasi <<StatefulWidget>> {
+    + adSoyad : String
+    --
+  }
+
+  class ProfilSayfasiState <<State>> {
+    - telefon : String
+    - kanGrubu : String
+    - yakinKisi : String
+    - yakinTelefon : String
+    --
+    + initState() : void
+    - _bilgileriYukle() : Future<void>
+    - _cikisYap() : Future<void>
+    - _buildProfileItem(...) : Widget
+    + build(context) : Widget
+  }
+
+  class AcilYardimSayfasi <<StatelessWidget>> {
+    --
+    + build(context) : Widget
+    - _buildEmergencyButton(...) : Widget
+  }
+}
+
+' ─── HARİTA EKRANI ───────────────────────────
+package "Harita Ekranı" #MistyRose {
+
+  class AcilHaritaSayfasi <<StatefulWidget>> {
+    + isKurum : bool
+    + secilenTur : String?
+    --
+  }
+
+  class AcilHaritaSayfasiState <<State>> {
+    - _haritaKontrolcu : GoogleMapController?
+    - _isaretciler : Set<Marker>
+    - _duzenlemeModu : bool
+    - _merkezKonum : LatLng
+    - _sonTiklamaZamani : DateTime?
+    --
+    + initState() : void
+    - _noktalariCanliDinle() : void
+    - _yardimNoktasiEkle() : Future<void>
+    - _toplanmaNoktasiEkle() : Future<void>
+    - _silmeOnayiAl(docId: String) : Future<void>
+    - _noktayiSil(docId: String) : Future<void>
+    - _konumumaGit() : Future<void>
+    + build(context) : Widget
+  }
+}
+
+' ─── KURUM EKRANLARI ─────────────────────────
+package "Kurum Ekranları" #Lavender {
+
+  class KurumAnaSayfasi <<StatelessWidget>> {
+    + kurumAdi : String
+    --
+    + build(context) : Widget
+    - _buildAdminCard(...) : Widget
+  }
+}
+
+' ══════════════════════════════════════════════
+'  STATE ↔ WIDGET İLİŞKİLERİ
+' ══════════════════════════════════════════════
+KayitSayfasi       "1" *-- "1" KayitSayfasiState       : createState()
+KurumKayitSayfasi  "1" *-- "1" KurumKayitSayfasiState  : createState()
+LoginPage          "1" *-- "1" LoginPageState           : createState()
+ProfilSayfasi      "1" *-- "1" ProfilSayfasiState       : createState()
+AcilHaritaSayfasi  "1" *-- "1" AcilHaritaSayfasiState  : createState()
+
+' ══════════════════════════════════════════════
+'  NAVİGASYON / BAĞIMLILIKLAR
+' ══════════════════════════════════════════════
+VektorApp              ..> HomePage              : isLoggedIn=true → yönlendirir
+VektorApp              ..> GirisSecimSayfasi     : isLoggedIn=false → yönlendirir
+
+GirisSecimSayfasi      ..> KayitSayfasi          : "Kullanıcı Girişi" tıklanınca
+GirisSecimSayfasi      ..> KurumKayitSayfasi     : "Kurum Girişi" tıklanınca
+GirisSecimSayfasi      ..> LoginPage             : "Giriş Yap" tıklanınca
+
+KayitSayfasiState      ..> HomePage              : kayıt başarılı → yönlendirir
+KurumKayitSayfasiState ..> KurumAnaSayfasi       : kayıt başarılı → yönlendirir
+LoginPageState         ..> HomePage              : kullanıcı girişi başarılı
+LoginPageState         ..> KurumAnaSayfasi       : kurum girişi başarılı
+
+HomePage               ..> AcilYardimSayfasi     : "Yardım İste" kartı
+HomePage               ..> AcilHaritaSayfasi     : "Acil Harita" kartı
+HomePage               ..> ProfilSayfasi         : profil kartına tıklanınca
+
+AcilYardimSayfasi      ..> AcilHaritaSayfasi     : secilenTur ile yönlendirir
+
+KurumAnaSayfasi        ..> AcilHaritaSayfasi     : isKurum=true ile yönlendirir
+
+ProfilSayfasiState     ..> GirisSecimSayfasi     : oturumu kapat
+
+' ══════════════════════════════════════════════
+'  FİRESTORE BAĞLANTILARI
+' ══════════════════════════════════════════════
+KayitSayfasiState      ..> KullaniciModel        : yazar (add)
+LoginPageState         ..> KullaniciModel        : okur (where sorgusu)
+LoginPageState         ..> KurumModel            : okur (where sorgusu)
+KurumKayitSayfasiState ..> KurumModel            : yazar (add)
+AcilHaritaSayfasiState ..> EtkinlikNoktasiModel  : okur (stream) / yazar / siler
+
+@enduml

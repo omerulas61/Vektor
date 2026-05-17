@@ -1,0 +1,133 @@
+digraph Vektor_UseCase {
+
+    // ── Genel ayarlar ──────────────────────────────────────
+    graph [
+        label       = "Vektör – Afet Koordinasyon Sistemi\nKullanım Senaryoları ve Aktör Etkileşimleri"
+        labelloc    = "t"
+        fontname    = "Arial"
+        fontsize    = 16
+        rankdir     = TB
+        nodesep     = 0.6
+        ranksep     = 0.8
+        splines     = ortho
+        bgcolor     = "white"
+    ]
+
+    node [
+        shape     = box
+        style     = "rounded,filled"
+        fillcolor = "white"
+        color     = "#333333"
+        fontname  = "Arial"
+        fontsize  = 10
+        width     = 1.4
+        height    = 0.55
+    ]
+
+    edge [
+        color     = "#333333"
+        arrowsize = 0.8
+        fontname  = "Arial"
+        fontsize  = 9
+    ]
+
+    // ── AKTÖRLER (bold, kutusuz görünüm) ───────────────────
+    node [shape=plaintext, fillcolor=none, style="", fontsize=12, fontname="Arial Bold"]
+    KULLANICI_TOP  [label="KULLANICI"]
+    KURUM_ACT      [label="KURUM"]
+    KULLANICI_MID  [label="KULLANICI"]
+
+    // ── Düğümler ───────────────────────────────────────────
+    node [shape=box, style="rounded,filled", fillcolor="white", color="#333333", fontsize=10, fontname="Arial"]
+
+    GIRIS          [label="GİRİŞ YAP /\nKAYIT OL",          width=1.6]
+
+    // Kullanıcı ana dal
+    KULLANICI_ANA  [label="KULLANICI\nANA SAYFASI",          fillcolor="#FFF9C4"]
+    PROFIL         [label="PROFİL\nGÖRÜNTÜLE"]
+    ACIL_YARDIM    [label="ACİL YARDIM\nTALEBİ",             fillcolor="#FFCCBC"]
+    HARITA_USER    [label="ACİL\nHARİTA"]
+    GONULLU        [label="GÖNÜLLÜ\nOL"]
+    DESTEK         [label="MADDİ\nDESTEK OL"]
+
+    // Acil yardım alt türleri
+    ENKAZ          [label="ENKAZ\nALTINDAYIM",               fillcolor="#FFCDD2"]
+    YARALI         [label="YARALI\nVAR",                     fillcolor="#FFCDD2"]
+    YANGIN         [label="YANGIN /\nPATLAMA",               fillcolor="#FFCDD2"]
+    SEL            [label="SU\nBASKINI",                     fillcolor="#FFCDD2"]
+
+    KONUM_BILDIR   [label="KONUM\nBİLDİR",                   fillcolor="#EF9A9A", fontname="Arial Bold"]
+
+    // Kurum ana dal
+    KURUM_PANEL    [label="KURUM\nPANELİ",                   fillcolor="#BBDEFB"]
+    GELEN_TALEPLER [label="GELEN\nTALEPLER"]
+    HARITA_KURUM   [label="AFET\nHARİTASI"]
+    EKIP           [label="EKİP\nYÖNETİMİ"]
+    LOJISTIK       [label="LOJİSTİK\nYÖNETİMİ"]
+
+    NOKTA_EKLE     [label="TOPLANMA\nNOKTASI EKLE",          fillcolor="#C8E6C9"]
+    NOKTA_SIL      [label="BİLDİRİM /\nNOKTA SİL",          fillcolor="#FFCDD2"]
+
+    // Firestore
+    FIRESTORE      [label="FİRESTORE\nCANLI VERİ",           fillcolor="#E1BEE7", shape=cylinder, width=1.4, height=0.7]
+
+    // ── Rank (aynı seviyeye koy) ───────────────────────────
+    { rank=same; KULLANICI_TOP; KURUM_ACT }
+    { rank=same; KULLANICI_ANA; KURUM_PANEL }
+    { rank=same; PROFIL; ACIL_YARDIM; HARITA_USER; GONULLU; DESTEK;
+                 GELEN_TALEPLER; HARITA_KURUM; EKIP; LOJISTIK }
+    { rank=same; ENKAZ; YARALI; YANGIN; SEL;
+                 NOKTA_EKLE; NOKTA_SIL }
+    { rank=same; KONUM_BILDIR; KULLANICI_MID }
+
+    // ── Bağlantılar ────────────────────────────────────────
+
+    // Aktörler → Giriş
+    KULLANICI_TOP -> GIRIS
+    KURUM_ACT     -> GIRIS
+
+    // Giriş → Ana sayfalar
+    GIRIS -> KULLANICI_ANA
+    GIRIS -> KURUM_PANEL
+
+    // Kullanıcı ana sayfa → alt işlemler
+    KULLANICI_ANA -> PROFIL
+    KULLANICI_ANA -> ACIL_YARDIM
+    KULLANICI_ANA -> HARITA_USER
+    KULLANICI_ANA -> GONULLU
+    KULLANICI_ANA -> DESTEK
+
+    // Acil yardım → alt türler
+    ACIL_YARDIM -> ENKAZ
+    ACIL_YARDIM -> YARALI
+    ACIL_YARDIM -> YANGIN
+    ACIL_YARDIM -> SEL
+
+    // Alt türler → Konum bildir
+    ENKAZ  -> KONUM_BILDIR
+    YARALI -> KONUM_BILDIR
+    YANGIN -> KONUM_BILDIR
+    SEL    -> KONUM_BILDIR
+
+    // Kullanıcı (orta aktör) etkileşimleri
+    KULLANICI_MID -> HARITA_USER    [label="haritayı\ngörüntüler", style=dashed]
+    KULLANICI_MID -> KONUM_BILDIR   [label="konumunu\nbildirir",   style=dashed]
+
+    // Kurum paneli → alt işlemler
+    KURUM_PANEL -> GELEN_TALEPLER
+    KURUM_PANEL -> HARITA_KURUM
+    KURUM_PANEL -> EKIP
+    KURUM_PANEL -> LOJISTIK
+
+    // Harita kurum → alt işlemler
+    HARITA_KURUM -> NOKTA_EKLE
+    HARITA_KURUM -> NOKTA_SIL
+
+    // Firestore bağlantıları
+    KONUM_BILDIR   -> FIRESTORE  [label="yazar",        color="#7B1FA2"]
+    NOKTA_EKLE     -> FIRESTORE  [label="yazar",        color="#7B1FA2"]
+    NOKTA_SIL      -> FIRESTORE  [label="siler",        color="#C62828"]
+    HARITA_USER    -> FIRESTORE  [label="okur (stream)", color="#1565C0", style=dashed]
+    HARITA_KURUM   -> FIRESTORE  [label="okur (stream)", color="#1565C0", style=dashed]
+    GELEN_TALEPLER -> FIRESTORE  [label="okur",         color="#1565C0", style=dashed]
+}

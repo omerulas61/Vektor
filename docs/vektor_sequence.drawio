@@ -1,0 +1,152 @@
+<mxfile host="app.diagrams.net" version="21.0.0" type="device">
+  <diagram name="1 - Kullanici Kayit" id="seq-kayit">
+    <mxGraphModel dx="1400" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+
+        <!-- BAŞLIK -->
+        <mxCell id="t1" value="Kullanıcı Kayıt Akışı" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="10" width="400" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- ── LIFELINE BAŞLIKLARI ── -->
+        <mxCell id="h_kullanici" value="Kullanıcı" style="shape=mxgraph.flowchart.start_2;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="50" width="40" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_kullanici_lbl" value="Kullanıcı" style="text;html=1;align=center;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="95" width="80" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="h_ui" value="Kayıt Sayfası&#xa;(UI)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="220" y="55" width="110" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="h_state" value="KayitSayfasi&#xa;State" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="420" y="55" width="110" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="h_firestore" value="Firebase&#xa;Firestore" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="650" y="55" width="110" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="h_prefs" value="Shared&#xa;Preferences" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="870" y="55" width="110" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="h_home" value="HomePage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="55" width="110" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- ── LIFELINE ÇİZGİLERİ ── -->
+        <mxCell id="l1" style="edgeStyle=none;dashed=1;endArrow=none;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><Array as="points"/></mxGeometry>
+          <mxCell id="l1s" style="" vertex="1" parent="l1"><mxGeometry x="0" y="0" as="geometry"/></mxCell>
+          <mxCell id="l1t" style="" vertex="1" parent="l1"><mxGeometry x="1" y="0" as="geometry"/></mxCell>
+        </mxCell>
+
+        <mxCell id="ll_kullanici" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#6c8ebf;" edge="1" source="h_kullanici" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="80" y="800" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll_ui" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#666666;" edge="1" source="h_ui" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="275" y="800" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll_state" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#666666;" edge="1" source="h_state" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="475" y="800" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll_fs" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#9673a6;" edge="1" source="h_firestore" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="705" y="800" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll_prefs" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#d6b656;" edge="1" source="h_prefs" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="925" y="800" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll_home" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#82b366;" edge="1" source="h_home" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1135" y="800" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- ── MESAJLAR ── -->
+
+        <!-- 1: Kullanıcı formu doldurur -->
+        <mxCell id="m1" value="Formu doldurur (ad, tel, şifre, kan grubu, yakın bilgisi)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="80" y="150" as="sourcePoint"/><mxPoint x="275" y="150" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- 2: KAYDI TAMAMLA butonuna basar -->
+        <mxCell id="m2" value="KAYDI TAMAMLA butonuna basar" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="80" y="185" as="sourcePoint"/><mxPoint x="275" y="185" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- 3: Form validasyonu -->
+        <mxCell id="m3" value="_formKey.currentState.validate()" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="275" y="220" as="sourcePoint"/><mxPoint x="475" y="220" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- ALT FRAME: Validasyon -->
+        <mxCell id="alt_frame" value="alt [Form geçerli]" style="swimlane;startSize=20;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="130" y="240" width="1150" height="320" as="geometry"/>
+        </mxCell>
+
+        <!-- 4: _verileriKaydet() çağrısı -->
+        <mxCell id="m4" value="_verileriKaydet()" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="alt_frame">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="145" y="50" as="sourcePoint"/><mxPoint x="345" y="50" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- 5: Firestore'a yaz -->
+        <mxCell id="m5" value="collection('Kullanicilar').add({adSoyad, telefon, sifre, kanGrubu, yakinBilgisi})" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="alt_frame">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="345" y="90" as="sourcePoint"/><mxPoint x="575" y="90" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- 6: Kayıt başarılı dönüşü -->
+        <mxCell id="m6" value="Kayıt başarılı (DocumentReference)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;dashed=1;fontSize=9;" edge="1" parent="alt_frame">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="575" y="125" as="sourcePoint"/><mxPoint x="345" y="125" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- 7: Navigator → HomePage -->
+        <mxCell id="m7" value="Navigator.pushAndRemoveUntil → HomePage(adSoyad)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="alt_frame">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="345" y="165" as="sourcePoint"/><mxPoint x="950" y="165" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- ALT FRAME içi: [Form geçersiz] -->
+        <mxCell id="alt_invalid" value="[Form geçersiz]" style="swimlane;startSize=20;fillColor=#fff0f0;strokeColor=#cc0000;fontStyle=1;fontSize=9;" vertex="1" parent="alt_frame">
+          <mxGeometry x="15" y="210" width="400" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="m8" value="Hata mesajı göster (validator)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="alt_invalid">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="145" y="45" as="sourcePoint"/><mxPoint x="15" y="45" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- 9: Sonuç bildirimi -->
+        <mxCell id="m9" value="Sonuç bildirimi (Ana sayfa açılır)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;dashed=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="275" y="590" as="sourcePoint"/><mxPoint x="80" y="590" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- ALT LIFELINE BAŞLIKLARI (alt) -->
+        <mxCell id="h2_kullanici" value="Kullanıcı" style="shape=mxgraph.flowchart.start_2;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="620" width="40" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="h2_kullanici_lbl" value="Kullanıcı" style="text;html=1;align=center;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="665" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="h2_ui" value="Kayıt Sayfası&#xa;(UI)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="220" y="625" width="110" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="h2_state" value="KayitSayfasi&#xa;State" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="420" y="625" width="110" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="h2_firestore" value="Firebase&#xa;Firestore" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="650" y="625" width="110" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="h2_prefs" value="Shared&#xa;Preferences" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="870" y="625" width="110" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="h2_home" value="HomePage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="625" width="110" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- ALT AÇIKLAMA -->
+        <mxCell id="caption1" value="Kullanıcı kayıt oluşturabilir" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=13;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="700" width="400" height="30" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,146 @@
+<mxfile host="app.diagrams.net" version="21.0.0" type="device">
+  <diagram name="3 - Acil Yardim Talebi" id="seq-acil">
+    <mxGraphModel dx="1400" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+
+        <mxCell id="t1" value="Acil Yardım Talebi ve Konum Bildirme Akışı" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="10" width="600" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- LIFELINE BAŞLIKLARI -->
+        <mxCell id="h_k" value="Kullanıcı" style="shape=mxgraph.flowchart.start_2;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="55" y="50" width="40" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="h_k_lbl" value="Kullanıcı" style="text;html=1;align=center;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="35" y="95" width="80" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="h_home" value="HomePage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="200" y="55" width="110" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="h_acil" value="AcilYardim&#xa;Sayfasi" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="390" y="55" width="110" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="h_harita" value="AcilHarita&#xa;Sayfasi" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="55" width="110" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="h_maps" value="Google Maps&#xa;/ Geolocator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="800" y="55" width="120" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="h_fs" value="Firebase&#xa;Firestore" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="55" width="110" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- LIFELINE ÇİZGİLERİ -->
+        <mxCell id="ll1" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#6c8ebf;" edge="1" source="h_k" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="75" y="800" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll2" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#82b366;" edge="1" source="h_home" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="255" y="800" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll3" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#d79b00;" edge="1" source="h_acil" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="445" y="800" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll4" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#b85450;" edge="1" source="h_harita" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="645" y="800" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll5" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#d6b656;" edge="1" source="h_maps" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="860" y="800" as="targetPoint"/></mxGeometry>
+        </mxCell>
+        <mxCell id="ll6" style="edgeStyle=none;dashed=1;endArrow=none;strokeColor=#9673a6;" edge="1" source="h_fs" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1095" y="800" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- MESAJLAR -->
+        <mxCell id="m1" value="'YARDIM İSTE' kartına basar" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="75" y="150" as="sourcePoint"/><mxPoint x="255" y="150" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="m2" value="Navigator.push → AcilYardimSayfasi()" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="255" y="185" as="sourcePoint"/><mxPoint x="445" y="185" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="m3" value="Acil durum türünü seçer&#xa;(Enkaz / Yaralı / Yangın / Sel)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="75" y="230" as="sourcePoint"/><mxPoint x="445" y="230" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="m4" value="Navigator.push → AcilHaritaSayfasi(isKurum:false, secilenTur:'Enkaz')" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="445" y="265" as="sourcePoint"/><mxPoint x="645" y="265" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="m5" value="initState() → _noktalariCanliDinle()" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="645" y="300" as="sourcePoint"/><mxPoint x="645" y="300" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="m6" value="collection('EtkinlikNoktalari').snapshots()" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="645" y="315" as="sourcePoint"/><mxPoint x="1095" y="315" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="m7" value="Mevcut noktalar (stream)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;dashed=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1095" y="350" as="sourcePoint"/><mxPoint x="645" y="350" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="m8" value="Geolocator.getCurrentPosition()" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="645" y="385" as="sourcePoint"/><mxPoint x="860" y="385" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="m9" value="Konum (lat, lng)" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;dashed=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="860" y="415" as="sourcePoint"/><mxPoint x="645" y="415" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="m10" value="Haritayı konuma kaydırır, pin gösterir" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;dashed=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="645" y="445" as="sourcePoint"/><mxPoint x="75" y="445" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="m11" value="'KONUMUNU BİLDİR' butonuna basar" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="75" y="480" as="sourcePoint"/><mxPoint x="645" y="480" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="m12" value="_yardimNoktasiEkle() → collection('EtkinlikNoktalari').add({baslik, tur, konum, zaman})" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="645" y="515" as="sourcePoint"/><mxPoint x="1095" y="515" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="m13" value="Kayıt başarılı" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;dashed=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1095" y="550" as="sourcePoint"/><mxPoint x="645" y="550" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <mxCell id="m14" value="SnackBar: 'Yardım talebiniz iletildi' + Navigator.pop()" style="edgeStyle=orthogonalEdgeStyle;endArrow=open;endFill=0;dashed=1;fontSize=9;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="645" y="585" as="sourcePoint"/><mxPoint x="75" y="585" as="targetPoint"/></mxGeometry>
+        </mxCell>
+
+        <!-- ALT LIFELINE BAŞLIKLARI -->
+        <mxCell id="h2_k" value="Kullanıcı" style="shape=mxgraph.flowchart.start_2;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="55" y="620" width="40" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="h2_k_lbl" value="Kullanıcı" style="text;html=1;align=center;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="35" y="665" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="h2_home" value="HomePage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="200" y="625" width="110" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="h2_acil" value="AcilYardim&#xa;Sayfasi" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="390" y="625" width="110" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="h2_harita" value="AcilHarita&#xa;Sayfasi" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="625" width="110" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="h2_maps" value="Google Maps&#xa;/ Geolocator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="800" y="625" width="120" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="h2_fs" value="Firebase&#xa;Firestore" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="625" width="110" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cap3" value="Kullanıcı acil yardım talebi oluşturabilir ve konumunu bildirebilir" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=13;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="300" y="710" width="700" height="30" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

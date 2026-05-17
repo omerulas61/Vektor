@@ -7,6 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vektor/screens/profil_sayfasi.dart';
 import 'package:vektor/screens/acil_harita_sayfasi.dart';
 import 'package:vektor/theme/app_theme.dart';
+import 'package:vektor/screens/gonullu_sayfasi.dart';
+import 'package:vektor/screens/haberler_sayfasi.dart';
+import 'package:vektor/screens/destek_ol_sayfasi.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -130,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                                   color: Colors.white.withValues(alpha: 0.15),
                                   border: Border.all(
                                       color:
-                                          Colors.white.withValues(alpha: 0.4),
+                                      Colors.white.withValues(alpha: 0.4),
                                       width: 1.5),
                                 ),
                                 child: Center(
@@ -315,6 +319,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildMainGrid(BuildContext context) {
+    // BURASI DÜZENLENDİ: Tüm kartlara tek tek resim yolları eklendi
     final List<Map<String, dynamic>> cards = [
       {
         'title': 'GÖNÜLLÜ OL',
@@ -322,7 +327,8 @@ class _HomePageState extends State<HomePage> {
         'icon': Icons.handshake_rounded,
         'color': AppColors.secondary,
         'bgColor': const Color(0xFFE3F2FD),
-        'targetPage': null,
+        'imagePath': 'assets/gonullu.png',
+        'targetPage': const GonulluSayfasi(),
       },
       {
         'title': 'ACİL HARİTA',
@@ -330,6 +336,7 @@ class _HomePageState extends State<HomePage> {
         'icon': Icons.map_rounded,
         'color': AppColors.accentOrange,
         'bgColor': const Color(0xFFFFF3E0),
+        'imagePath': 'assets/harita.png',
         'targetPage': AcilHaritaSayfasi(),
       },
       {
@@ -338,7 +345,8 @@ class _HomePageState extends State<HomePage> {
         'icon': Icons.volunteer_activism_rounded,
         'color': const Color(0xFF6A1B9A),
         'bgColor': const Color(0xFFF3E5F5),
-        'targetPage': null,
+        'imagePath': 'assets/destek.png',
+        'targetPage': const DestekOlSayfasi(),
       },
       {
         'title': 'HABERLER',
@@ -346,7 +354,8 @@ class _HomePageState extends State<HomePage> {
         'icon': Icons.newspaper_rounded,
         'color': AppColors.accentGreen,
         'bgColor': const Color(0xFFE8F5E9),
-        'targetPage': null,
+        'imagePath': 'assets/haberler.png',
+        'targetPage': const HaberlerSayfasi(),
       },
     ];
 
@@ -421,7 +430,23 @@ class _HomePageState extends State<HomePage> {
                   ),
               ],
             ),
-            const Spacer(),
+
+            // BURASI DÜZENLENDİ: Ortadaki beyaz boşluğa dinamik Image widget'ı yerleştirildi
+            if (card['imagePath'] != null)
+              Expanded(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Image.asset(
+                      card['imagePath'],
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              )
+            else
+              const Spacer(),
+
             Text(
               card['title'],
               style: const TextStyle(
